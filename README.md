@@ -27,7 +27,7 @@ ___
  Request → Route → Middleware → Controller → Service → Model → DB
  
 ---
-📁 routes/
+routes/
 
 Define los endpoints de la API.
 - Solo maneja rutas y delega lógica.
@@ -49,7 +49,7 @@ router.get("/profile", validateToken, (req, res) => {
 export default router;
 ```
 
-📁 middlewares/
+middlewares/
 
 Funciones que se ejecutan antes del controller.
 -Validaciones, auth, logs, etc.
@@ -75,7 +75,7 @@ export const validateToken = (req, res, next) => {
 };
 ```
 
-📁 controllers/
+controllers/
 
 - Maneja la request y response
 - NO lógica compleja
@@ -107,7 +107,7 @@ export const login = async (req, res) => {
 };
 ```
 
-📁 services/
+services/
 
 - Acá va la lógica de negocio
 
@@ -149,7 +149,7 @@ export const loginUser = async ({ email, password }) => {
 };
 ```
 
-📁 models/
+models/
 
 - Define el modelo de datos (MongoDB / Mongoose)
 
@@ -165,7 +165,7 @@ const userSchema = new mongoose.Schema({
 export default mongoose.model("User", userSchema);
 ```
 
-📁 db/
+db/
 
 - Conexión a la base de datos
 
@@ -182,7 +182,7 @@ export const connectDB = async () => {
   }
 };
 ```
-📁 config/
+config/
 
 - Configuraciones globales
 
@@ -192,7 +192,7 @@ import dotenv from "dotenv";
 dotenv.config();
 ```
 
-📁 libs/
+libs/
 
 - Funciones reutilizables
 

@@ -1,222 +1,226 @@
-# SECTOR 7G
+# Talento Evolutivo S.A. API (Backend)
 
-- trabajo practico proyectado como practica profecional para la carrera de Tecnico superior en desarrollo de software
-___
+API REST en Node.js + Express para seguimiento administrativo del proceso de liquidacion de haberes: empresas, empleados, novedades, seguimientos, auditoria e indicadores. La persistencia es local en archivos JSON (sin DB externa).
 
-## Tecnologias utilizadas
-- Node js
+## Quickstart
 
-## Librerías
+Desde `Sector-7G-Soluciones/backend/`:
 
-- **express**  
-  Framework minimalista para Node.js que permite crear servidores web y APIs de forma rápida. Maneja rutas, middlewares y respuestas HTTP.
-
-- **dotenv**  
-  Permite cargar variables de entorno desde un archivo `.env` al proyecto (`process.env`), ideal para manejar configuraciones sensibles.
-
-- **morgan**  
-  Middleware que registra las peticiones HTTP que llegan al servidor, útil para debug y monitoreo.
-
-- **nodemon**  
-  Herramienta de desarrollo que reinicia automáticamente el servidor cuando detecta cambios en el código.
-
----  
-  
-## Concepto General (Flujo de una Request)
-
- Request → Route → Middleware → Controller → Service → Model → DB
- 
----
-routes/
-
-Define los endpoints de la API.
-- Solo maneja rutas y delega lógica.
-
-```javascript
-// routes/auth.routes.js
-import { Router } from "express";
-import { login, register } from "../controllers/auth.controller.js";
-import { validateToken } from "../middlewares/auth.middleware.js";
-
-const router = Router();
-
-router.post("/login", login);
-router.post("/register", register);
-router.get("/profile", validateToken, (req, res) => {
-  res.json({ user: req.user });
-});
-
-export default router;
+```bash
+npm install
+npm start
 ```
 
-middlewares/
+Base URL:
 
-Funciones que se ejecutan antes del controller.
--Validaciones, auth, logs, etc.
-
-```javascript
-// middlewares/auth.middleware.js
-import jwt from "jsonwebtoken";
-
-export const validateToken = (req, res, next) => {
-  const token = req.headers.authorization;
-
-  if (!token) {
-    return res.status(401).json({ message: "No token" });
-  }
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
-    next();
-  } catch (error) {
-    return res.status(403).json({ message: "Invalid token" });
-  }
-};
+```text
+http://localhost:3000
 ```
 
-controllers/
+Health / root:
 
-- Maneja la request y response
-- NO lógica compleja
-
-Recibe datos (req)
-Llama al service
-Devuelve respuesta (res)
-
-```Javascript
-// controllers/auth.controller.js
-import * as authService from "../services/auth.service.js";
-
-export const register = async (req, res) => {
-  try {
-    const user = await authService.registerUser(req.body);
-    res.status(201).json(user);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-};
-
-export const login = async (req, res) => {
-  try {
-    const data = await authService.loginUser(req.body);
-    res.json(data);
-  } catch (error) {
-    res.status(401).json({ message: error.message });
-  }
-};
+```bash
+curl http://localhost:3000/
 ```
 
-services/
+## Datos y persistencia
 
-- Acá va la lógica de negocio
+- Persistencia: `src/db/data/*.json`
+- IDs: numericos autoincrementales por entidad
+- Soft delete: `DELETE` marca `activo=false` (baja logica)
 
-Validaciones complejas
-Reglas
-Encriptación
-Tokens
+## Respuestas y errores
 
-```javascript
-// services/auth.service.js
-import User from "../models/user.model.js";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+- Respuesta: JSON
+- Codigos comunes: `200`, `201`, `400`, `404`, `500`
+- Error tipico:
 
-export const registerUser = async ({ email, password }) => {
-  const exist = await User.findOne({ email });
-  if (exist) throw new Error("User already exists");
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  const user = new User({ email, password: hashedPassword });
-  await user.save();
-
-  return user;
-};
-
-export const loginUser = async ({ email, password }) => {
-  const user = await User.findOne({ email });
-  if (!user) throw new Error("User not found");
-
-  const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) throw new Error("Invalid password");
-
-  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-    expiresIn: "1h",
-  });
-
-  return { token };
-};
+```json
+{
+  "message": "Detalle del error"
+}
 ```
 
-models/
+## Endpoints
 
-- Define el modelo de datos (MongoDB / Mongoose)
+### Empresas
 
-```javascript
-// models/user.model.js
-import mongoose from "mongoose";
+**GET** `/api/empresas`
 
-const userSchema = new mongoose.Schema({
-  email: { type: String, required: true },
-  password: { type: String, required: true },
-});
+- Query params opcionales: `activo=true|false`
+- Devuelve una vista enriquecida con `empleados` y `novedades` relacionadas.
 
-export default mongoose.model("User", userSchema);
+**GET** `/api/empresas/:id`
+
+- Devuelve una empresa por id, incluyendo `empleados` y `novedades`.
+
+**POST** `/api/empresas`
+
+- Body requerido:
+
+```json
+{
+  "nombre": "Orion Software SA",
+  "cuit": "30-70123456-7",
+  "rubro": "Desarrollo de software",
+  "contacto": "contacto@orionsoftware.com"
+}
 ```
 
-db/
+- Notas:
+  - `cuit` debe ser unico (si existe devuelve `400`).
 
-- Conexión a la base de datos
+**PUT** `/api/empresas/:id`
 
-```javascript
-// db/connection.js
-import mongoose from "mongoose";
+- Body: al menos 1 campo.
+- Campos aceptados: `nombre`, `cuit`, `rubro`, `contacto`
 
-export const connectDB = async () => {
-  try {
-    await mongoose.connect(process.env.MONGO_URI);
-    console.log("DB connected");
-  } catch (error) {
-    console.error(error);
-  }
-};
-```
-config/
+**DELETE** `/api/empresas/:id`
 
-- Configuraciones globales
+- Baja logica (marca `activo=false`).
+- Restriccion: no permite baja si tiene empleados o novedades activas.
 
-```javascript
-// config/env.js
-import dotenv from "dotenv";
-dotenv.config();
-```
+### Empleados
 
-libs/
+**GET** `/api/empleados`
 
-- Funciones reutilizables
+- Query params opcionales: `empresaId=<number>`, `activo=true|false`
 
-Ejemplo: generar token, helpers, etc.
+**GET** `/api/empleados/:id`
 
-```javascript
-// libs/jwt.js
-import jwt from "jsonwebtoken";
+**POST** `/api/empleados`
 
-export const generateToken = (payload) => {
-  return jwt.sign(payload, process.env.JWT_SECRET, {
-    expiresIn: "1h",
-  });
-};
+- Body requerido:
+
+```json
+{
+  "nombre": "Juan",
+  "apellido": "Perez",
+  "dni": "40111222",
+  "puesto": "Dev",
+  "email": "juan@empresa.com",
+  "empresaId": 1
+}
 ```
 
-## Resumen de estructura de carpetas
-| Carpeta     | Responsabilidad       |
-| ----------- | --------------------- |
-| routes      | Define endpoints      |
-| middlewares | Validaciones previas  |
-| controllers | Manejo de req/res     |
-| services    | Lógica de negocio     |
-| models      | Esquema de datos      |
-| db          | Conexión a DB         |
-| config      | Configuración         |
-| libs        | Helpers reutilizables |
+- Restriccion: `empresaId` debe existir y estar activa.
+
+**PUT** `/api/empleados/:id`
+
+- Body: al menos 1 campo.
+- Campos aceptados: `nombre`, `apellido`, `dni`, `puesto`, `email`, `empresaId`
+
+**DELETE** `/api/empleados/:id`
+
+- Baja logica.
+- Restriccion: no permite baja si tiene novedades activas asociadas.
+
+### Novedades
+
+**GET** `/api/novedades`
+
+- Query params opcionales:
+  - `empresaId=<number>`
+  - `estado=pendiente|procesada|rechazada`
+  - `activo=true|false`
+- Devuelve una vista enriquecida con `empresa`, `empleado` y `seguimientos`.
+
+**GET** `/api/novedades/:id`
+
+**POST** `/api/novedades`
+
+- Body requerido:
+
+```json
+{
+  "tipo": "Licencia",
+  "descripcion": "Licencia por estudio",
+  "fecha": "2026-04-15",
+  "empresaId": 1,
+  "empleadoId": 1
+}
+```
+
+- Notas:
+  - `estado` opcional (si se envia, debe ser `pendiente|procesada|rechazada`).
+  - Validacion cruzada: el empleado debe pertenecer a la empresa y ambos deben estar activos.
+
+**PUT** `/api/novedades/:id`
+
+- Body: al menos 1 campo.
+- Campos aceptados: `tipo`, `descripcion`, `fecha`, `estado`, `empresaId`, `empleadoId`
+- Si cambia `estado`, se registra auditoria de cambio de estado.
+
+**DELETE** `/api/novedades/:id`
+
+- Baja logica.
+- Restriccion: no permite baja si tiene seguimientos activos.
+
+### Seguimientos
+
+**GET** `/api/seguimientos`
+
+- Query params opcionales:
+  - `empresaId=<number>` (filtra por empresa a traves de la novedad)
+  - `novedadId=<number>`
+  - `activo=true|false`
+- Devuelve una vista enriquecida con `novedad`, `empleado` y `empresa`.
+
+**GET** `/api/seguimientos/:id`
+
+**POST** `/api/seguimientos`
+
+- Body requerido:
+
+```json
+{
+  "novedadId": 1,
+  "fecha": "2026-04-15",
+  "responsable": "Mesa operativa",
+  "comentario": "Seguimiento inicial"
+}
+```
+
+- Restriccion: `novedadId` debe existir y estar activa.
+
+**PUT** `/api/seguimientos/:id`
+
+- Body: al menos 1 campo.
+- Campos aceptados: `novedadId`, `fecha`, `responsable`, `comentario`
+
+**DELETE** `/api/seguimientos/:id`
+
+- Baja logica.
+
+### Reportes
+
+**GET** `/resumen` o `/api/resumen`
+
+- Devuelve indicadores operativos (empresas activas, empleados activos, pendientes, etc.).
+
+### Auditoria
+
+**GET** `/auditoria` o `/api/auditoria`
+
+- Query params opcionales: `entidad=<string>`, `accion=<string>`
+- Entidades comunes: `empresa`, `empleado`, `novedad`, `seguimiento`
+- Acciones comunes: `creacion`, `modificacion`, `baja_logica`, `cambio_estado`
+
+## Pruebas rapidas (curl)
+
+```bash
+curl http://localhost:3000/api/empresas/1
+curl http://localhost:3000/api/novedades/1
+curl "http://localhost:3000/api/novedades?empresaId=1&estado=pendiente"
+curl "http://localhost:3000/api/auditoria?entidad=novedad"
+```
+
+## Arquitectura (breve)
+
+- `routes`: endpoints
+- `controllers`: request/response
+- `services`: reglas de negocio y validaciones cruzadas
+- `db`: acceso a JSON
+
+
+

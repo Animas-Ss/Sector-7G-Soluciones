@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "entidad": "novedad",
+    "entidadId": 2,
+    "accion": "cambio_estado",
+    "descripcion": "Novedad inicializada como procesada en los datos semilla.",
+    "timestamp": "2026-04-15T09:00:00.000Z"
+  },
+  {
+    "entidad": "empresa",
+    "entidadId": 3,
+    "accion": "creacion",
+    "descripcion": "Se creo la empresa Orion Software SA.",
+    "timestamp": "2026-04-15T16:23:44.956Z",
+    "id": 2
+  },
+  {
+    "entidad": "empresa",
+    "entidadId": 4,
+    "accion": "creacion",
+    "descripcion": "Se creo la empresa Axion Software SA.",
+    "timestamp": "2026-04-15T16:27:47.571Z",
+    "id": 3
+  }
+]

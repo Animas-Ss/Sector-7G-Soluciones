@@ -1,0 +1,339 @@
+openapi: 3.0.3
+info:
+  title: Talento Evolutivo S.A. - Módulo Liquidaciones
+  description: >
+    Endpoints para la gestión de liquidaciones de haberes.
+    Cada liquidación se asocia a una empresa y un empleado activos,
+    que deben tener una relación válida entre sí.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000
+    description: Servidor local de desarrollo
+
+tags:
+  - name: Liquidaciones
+    description: CRUD de liquidaciones de haberes
+
+paths:
+  /api/liquidaciones:
+    get:
+      tags: [Liquidaciones]
+      summary: Listar liquidaciones
+      description: >
+        Devuelve todas las liquidaciones. Acepta filtros opcionales por empresa,
+        empleado, estado y si está activa o no.
+      parameters:
+        - name: empresaId
+          in: query
+          schema:
+            type: integer
+          example: 1
+        - name: empleadoId
+          in: query
+          schema:
+            type: integer
+          example: 2
+        - name: estado
+          in: query
+          schema:
+            type: string
+            enum: [pendiente, procesada, rechazada]
+          example: pendiente
+        - name: activo
+          in: query
+          schema:
+            type: boolean
+          example: true
+      responses:
+        '200':
+          description: Lista de liquidaciones enriquecidas con datos de empresa y empleado
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LiquidacionView'
+              example:
+                - id: 1
+                  empresaId: 1
+                  empleadoId: 1
+                  periodo: "2026-04"
+                  concepto: "Sueldo básico abril"
+                  monto: 350000
+                  estado: pendiente
+                  activo: true
+                  createdAt: "2026-04-15T09:00:00.000Z"
+                  updatedAt: "2026-04-15T09:00:00.000Z"
+                  empresa:
+                    id: 1
+                    nombre: "Nova Gestion SRL"
+                    cuit: "30-71555555-2"
+                  empleado:
+                    id: 1
+                    nombre: "Lucia"
+                    apellido: "Mendez"
+                    puesto: "Analista SSR"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    post:
+      tags: [Liquidaciones]
+      summary: Crear liquidación
+      description: >
+        Crea una nueva liquidación. El empleado debe pertenecer a la empresa indicada
+        y ambos deben estar activos.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LiquidacionInput'
+            example:
+              empresaId: 1
+              empleadoId: 1
+              periodo: "2026-04"
+              concepto: "Sueldo básico abril"
+              monto: 350000
+              estado: pendiente
+      responses:
+        '201':
+          description: Liquidación creada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Liquidacion'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /api/liquidaciones/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        example: 1
+
+    get:
+      tags: [Liquidaciones]
+      summary: Obtener liquidación por ID
+      responses:
+        '200':
+          description: Liquidación encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LiquidacionView'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    put:
+      tags: [Liquidaciones]
+      summary: Actualizar liquidación
+      description: >
+        Actualiza uno o más campos de la liquidación. Si se cambia el estado,
+        se registra un evento de cambio_estado en auditoría.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LiquidacionUpdate'
+            example:
+              estado: procesada
+      responses:
+        '200':
+          description: Liquidación actualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Liquidacion'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    delete:
+      tags: [Liquidaciones]
+      summary: Dar de baja liquidación (baja lógica)
+      description: >
+        Marca la liquidación como inactiva (activo = false).
+        No elimina el registro físicamente.
+      responses:
+        '200':
+          description: Liquidación dada de baja
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Liquidacion'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+components:
+  schemas:
+    Liquidacion:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        empresaId:
+          type: integer
+          example: 1
+        empleadoId:
+          type: integer
+          example: 1
+        periodo:
+          type: string
+          description: Formato YYYY-MM
+          example: "2026-04"
+        concepto:
+          type: string
+          example: "Sueldo básico abril"
+        monto:
+          type: number
+          example: 350000
+        estado:
+          type: string
+          enum: [pendiente, procesada, rechazada]
+          example: pendiente
+        activo:
+          type: boolean
+          example: true
+        createdAt:
+          type: string
+          format: date-time
+          example: "2026-04-15T09:00:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2026-04-15T09:00:00.000Z"
+
+    LiquidacionView:
+      allOf:
+        - $ref: '#/components/schemas/Liquidacion'
+        - type: object
+          properties:
+            empresa:
+              type: object
+              nullable: true
+              properties:
+                id:
+                  type: integer
+                nombre:
+                  type: string
+                cuit:
+                  type: string
+            empleado:
+              type: object
+              nullable: true
+              properties:
+                id:
+                  type: integer
+                nombre:
+                  type: string
+                apellido:
+                  type: string
+                puesto:
+                  type: string
+
+    LiquidacionInput:
+      type: object
+      required: [empresaId, empleadoId, periodo, concepto, monto]
+      properties:
+        empresaId:
+          type: integer
+          example: 1
+        empleadoId:
+          type: integer
+          example: 1
+        periodo:
+          type: string
+          example: "2026-04"
+        concepto:
+          type: string
+          example: "Sueldo básico abril"
+        monto:
+          type: number
+          example: 350000
+        estado:
+          type: string
+          enum: [pendiente, procesada, rechazada]
+          default: pendiente
+
+    LiquidacionUpdate:
+      type: object
+      minProperties: 1
+      description: Al menos un campo es requerido.
+      properties:
+        empresaId:
+          type: integer
+        empleadoId:
+          type: integer
+        periodo:
+          type: string
+        concepto:
+          type: string
+        monto:
+          type: number
+        estado:
+          type: string
+          enum: [pendiente, procesada, rechazada]
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: boolean
+          example: true
+        statusCode:
+          type: integer
+          example: 400
+        message:
+          type: string
+          example: "Detalle del error"
+
+  responses:
+    BadRequest:
+      description: Datos inválidos o restricción de negocio
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: true
+            statusCode: 400
+            message: "El empleado no pertenece a la empresa indicada."
+    NotFound:
+      description: Recurso no encontrado
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: true
+            statusCode: 404
+            message: "Liquidacion no encontrada."
+    ServerError:
+      description: Error interno del servidor
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: true
+            statusCode: 500
+            message: "Error interno del servidor"

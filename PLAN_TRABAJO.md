@@ -96,12 +96,12 @@ El sistema deberá organizarse siguiendo una arquitectura modular, validar datos
 
 ### **Andrea Maccan** (`amaccan`):
 
-- [ ] Módulo Liquidaciones: modelo (`liquidacion.js`)
-- [ ] Módulo Liquidaciones: capa de persistencia (`liquidacion.db.js` + `liquidaciones.json` con datos semilla)
-- [ ] Módulo Liquidaciones: service (`liquidacion.service.js`) con validaciones cruzadas (empresa y empleado deben existir y estar activos)
-- [ ] Módulo Liquidaciones: controller (`liquidacion.controller.js`) y rutas (`liquidacion.routes.js`) con CRUD completo
-- [ ] Registrar auditoría en creación, modificación y baja lógica de liquidaciones
-- [ ] Conectar el router de liquidaciones en `index.routes.js`
+- [x] Módulo Liquidaciones: modelo (`liquidacion.js`)
+- [x] Módulo Liquidaciones: capa de persistencia (`liquidacion.db.js` + `liquidaciones.json` con datos semilla)
+- [x] Módulo Liquidaciones: service (`liquidacion.service.js`) con validaciones cruzadas (empresa y empleado deben existir y estar activos)
+- [x] Módulo Liquidaciones: controller (`liquidacion.controller.js`) y rutas (`liquidacion.routes.js`) con CRUD completo
+- [x] Registrar auditoría en creación, modificación y baja lógica de liquidaciones
+- [x] Conectar el router de liquidaciones en `index.routes.js`
 - [ ] Vistas de Liquidaciones: listado (`views/liquidaciones/index.pug`), detalle (`views/liquidaciones/detalle.pug`), formulario alta/edición (`views/liquidaciones/form.pug`)
 - [ ] Actualizar `liquidacion.controller.js` para renderizar vistas Pug
 
@@ -150,15 +150,15 @@ El sistema deberá organizarse siguiendo una arquitectura modular, validar datos
 
 ## ACCIONABLES CLAVE POR MÓDULO
 
-- EMPRESA: ✅ Florencia
-- EMPLEADO: ✅ Florencia
-- NOVEDAD: ✅ Florencia
-- SEGUIMIENTO: ✅ Florencia
-- AUDITORÍA: ✅ Florencia
-- REPORTE: ✅ Florencia
-- LIQUIDACIÓN: 🔲 Andrea
-- SOCIOS: 🔲 Cecilia
-- QA/VALIDACIÓN: 🔲 Guillermo
+- [x] EMPRESA
+- [x] EMPLEADO
+- [x] NOVEDAD
+- [x] SEGUIMIENTO
+- [x] AUDITORÍA
+- [x] REPORTE
+- [ ] LIQUIDACIÓN
+- [ ] SOCIOS
+- [ ] QA/VALIDACION
 
 ---
 

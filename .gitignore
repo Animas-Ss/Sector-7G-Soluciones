@@ -47,3 +47,6 @@ vite.svg
 
 # Docker
 .dockerignore
+
+# Documentación generada (artefactos, no fuente)
+docs/bundle.yaml

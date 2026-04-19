@@ -67,12 +67,7 @@ El sistema deberá organizarse siguiendo una arquitectura modular, validar datos
 - [x] Estructura base de autenticación: `auth.routes.js`, `auth.controllers.js`, `auth.services.js`, `auth.models.js` (esqueleto)
 - [x] Simplificación de `index.js` (configuración básica sin middleware de errores)
 - [x] Archivos placeholder (`index.txt`) en `config/`, `libs/`, `middlewares/`, `interfaces/`
-- [ ] Configurar Pug en Express (`app.set('view engine', 'pug')`, carpeta `views/`)
-- [ ] Layout base (`views/layout.pug`): navbar con links a todos los módulos, bloque de contenido
-- [ ] Vista inicio (`views/index.pug`): bienvenida con links a cada sección
-- [ ] Vistas de Empresas: listado (`views/empresas/index.pug`), detalle (`views/empresas/detalle.pug`), formulario alta/edición (`views/empresas/form.pug`)
-- [ ] Vista de Reporte/Resumen (`views/reporte/resumen.pug`): mostrar indicadores y tabla de impacto por empresa
-- [ ] Actualizar `empresa.controller.js` y `reporte.controller.js` para renderizar vistas Pug
+- [ ] Configurar Pug en Express (`app.set('view engine', 'pug')`, carpeta `views/`) — **prerrequisito para el trabajo de Cecilia**
 
 ---
 
@@ -102,30 +97,36 @@ El sistema deberá organizarse siguiendo una arquitectura modular, validar datos
 - [x] Módulo Liquidaciones: controller (`liquidacion.controller.js`) y rutas (`liquidacion.routes.js`) con CRUD completo
 - [x] Registrar auditoría en creación, modificación y baja lógica de liquidaciones
 - [x] Conectar el router de liquidaciones en `index.routes.js`
-- [ ] Vistas de Liquidaciones: listado (`views/liquidaciones/index.pug`), detalle (`views/liquidaciones/detalle.pug`), formulario alta/edición (`views/liquidaciones/form.pug`)
-- [ ] Actualizar `liquidacion.controller.js` para renderizar vistas Pug
+- [ ] Módulo Socios: modelo (`socio.js`)
+- [ ] Módulo Socios: capa de persistencia (`socio.db.js` + `socios.json` con datos semilla)
+- [ ] Módulo Socios: service (`socio.service.js`) con validaciones (DNI/CUIT único, baja lógica)
+- [ ] Módulo Socios: controller (`socio.controller.js`) y rutas (`socio.routes.js`) con CRUD completo
+- [ ] Registrar auditoría en creación, modificación y baja lógica de socios
+- [ ] Conectar el router de socios en `index.routes.js`
+- [x] Documentación OpenAPI 3.0 del módulo (`docs/liquidaciones.yaml`) + bundle script (`npm run docs:bundle`)
 
 ---
 
 ### **Cecilia Gómez** (``):
 
-- [ ] Módulo Socios: modelo (`socio.js`)
-- [ ] Módulo Socios: capa de persistencia (`socio.db.js` + `socios.json` con datos semilla)
-- [ ] Módulo Socios: service (`socio.service.js`) con validaciones (DNI/CUIT único, baja lógica sin eliminar si tiene dependencias)
-- [ ] Módulo Socios: controller (`socio.controller.js`) y rutas (`socio.routes.js`) con CRUD completo
-- [ ] Registrar auditoría en creación, modificación y baja lógica de socios
-- [ ] Conectar el router de socios en `index.routes.js`
-- [ ] Vistas de Socios: listado (`views/socios/index.pug`), detalle (`views/socios/detalle.pug`), formulario alta/edición (`views/socios/form.pug`)
-- [ ] Actualizar `socio.controller.js` para renderizar vistas Pug
+> Todas las plantillas Pug. Requiere que Sebastián complete la configuración de Pug primero.
+
+- [ ] Layout base (`views/layout.pug`): navbar con links a todos los módulos, bloque de contenido
+- [ ] Vista inicio (`views/index.pug`): bienvenida con links a cada sección
+- [ ] Vistas de Empresas: `views/empresas/index.pug`, `detalle.pug`, `form.pug`
+- [ ] Vistas de Empleados: `views/empleados/index.pug`, `detalle.pug`, `form.pug`
+- [ ] Vistas de Novedades: `views/novedades/index.pug` (con filtros), `detalle.pug` (con seguimientos), `form.pug`
+- [ ] Vistas de Seguimiento: `views/seguimiento/index.pug`, `form.pug`
+- [ ] Vistas de Liquidaciones: `views/liquidaciones/index.pug`, `detalle.pug`, `form.pug`
+- [ ] Vistas de Socios: `views/socios/index.pug`, `detalle.pug`, `form.pug`
+- [ ] Vista de Auditoría: `views/auditoria/index.pug` (con filtros)
+- [ ] Vista de Reporte/Resumen: `views/reporte/resumen.pug` (indicadores y tabla de impacto)
+- [ ] Actualizar todos los controllers para renderizar vistas Pug en lugar de responder JSON
 
 ---
 
 ### **Guillermo Aybar** (``):
 
-- [ ] Vistas de Empleados: listado (`views/empleados/index.pug`), detalle (`views/empleados/detalle.pug`), formulario alta/edición (`views/empleados/form.pug`)
-- [ ] Vistas de Novedades: listado con filtros de estado y empresa (`views/novedades/index.pug`), detalle con seguimientos (`views/novedades/detalle.pug`), formulario (`views/novedades/form.pug`)
-- [ ] Vistas de Auditoría: listado con filtros (`views/auditoria/index.pug`)
-- [ ] Actualizar `empleado.controller.js`, `novedad.controller.js` y `auditoria.controller.js` para renderizar vistas Pug
 - [ ] QA: probar todos los endpoints y vistas con casos válidos e inválidos
 - [ ] QA: verificar validaciones cruzadas entre módulos (empresa→empleado→novedad→seguimiento)
 - [ ] Integración: merge de `dev` → `main` incluyendo todos los módulos y vistas
@@ -139,12 +140,12 @@ El sistema deberá organizarse siguiendo una arquitectura modular, validar datos
 - [ ] Grabar demostración del flujo completo:
   - Crear empresa → Registrar empleados → Registrar novedades → Ver seguimiento → Ver reportes
 - [ ] Mostrar: Estados de novedades (Pendiente → Procesada → Rechazada)
-[ ] Mostrar: Integración entre módulos (empresa-empleado-novedad-liquidación-socios)
-[ ] Mostrar: Auditoría registrando todos los cambios
-[ ] Explicar: Arquitectura modular y buenas prácticas
-[ ] Explicar: Manejo de errores y validaciones
-[ ] Editar video (máximo 10 minutos)
-[ ] Publicar/compartir
+- [ ] Mostrar: Integración entre módulos (empresa-empleado-novedad-liquidación-socios)
+- [ ] Mostrar: Auditoría registrando todos los cambios
+- [ ] Explicar: Arquitectura modular y buenas prácticas
+- [ ] Explicar: Manejo de errores y validaciones
+- [ ] Editar video (máximo 10 minutos)
+- [ ] Publicar/compartir
 
 ---
 
@@ -156,9 +157,9 @@ El sistema deberá organizarse siguiendo una arquitectura modular, validar datos
 - [x] SEGUIMIENTO
 - [x] AUDITORÍA
 - [x] REPORTE
-- [ ] LIQUIDACIÓN
+- [x] LIQUIDACIÓN
 - [ ] SOCIOS
-- [ ] QA/VALIDACION
+- [ ] QA/VALIDACIÓN
 
 ---
 
@@ -166,11 +167,11 @@ El sistema deberá organizarse siguiendo una arquitectura modular, validar datos
 
 | Integrante | Módulos | % Completado | Accionables Pendientes |
 |------------|---------|--------------|------------------------|
-| Sebastián Sosa | Auth (base), README, Setup Pug, Vistas Empresas + Reporte | 25% | Setup Pug + 4 vistas + actualizar controllers |
+| Sebastián Sosa | Auth (base), README, Setup Pug | 80% | Configurar Pug en Express (prerrequisito para Cecilia) |
 | Florencia Marcazzo | Empresa, Empleado, Novedad, Seguimiento, Auditoría, Reporte | 100% | — |
-| Andrea Maccan | Liquidaciones + Vistas Liquidaciones | 0% | CRUD completo + auditoría + 3 vistas |
-| Cecilia Gómez | Socios + Vistas Socios | 0% | CRUD completo + auditoría + 3 vistas |
-| Guillermo Aybar | Vistas Empleados, Novedades, Auditoría + QA + Integración + Video | 0% | 7 vistas + testing + merge + video |
+| Andrea Maccan | Liquidaciones + Socios | 50% | Módulo Socios: CRUD completo + auditoría |
+| Cecilia Gómez | Todas las vistas Pug (todos los módulos) | 0% | Layout + inicio + 10 módulos de vistas + actualizar controllers |
+| Guillermo Aybar | QA + Integración + Video | 0% | Testing endpoints y vistas + merge + video |
 | **TODOS** | **VIDEO** | **0%** | Grabar y editar demostración |
 
 

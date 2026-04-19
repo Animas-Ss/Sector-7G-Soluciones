@@ -14,6 +14,8 @@ servers:
 tags:
   - name: Liquidaciones
     description: CRUD de liquidaciones de haberes
+  - name: Socios
+    description: CRUD de socios de la consultora
 
 # Paths importados desde cada módulo
 paths:
@@ -21,6 +23,10 @@ paths:
     $ref: './liquidaciones.yaml#/paths/~1api~1liquidaciones'
   /api/liquidaciones/{id}:
     $ref: './liquidaciones.yaml#/paths/~1api~1liquidaciones~1{id}'
+  /api/socios:
+    $ref: './socios.yaml#/paths/~1api~1socios'
+  /api/socios/{id}:
+    $ref: './socios.yaml#/paths/~1api~1socios~1{id}'
 
 # Components consolidados desde cada módulo
 components:
@@ -33,6 +39,12 @@ components:
       $ref: './liquidaciones.yaml#/components/schemas/LiquidacionInput'
     LiquidacionUpdate:
       $ref: './liquidaciones.yaml#/components/schemas/LiquidacionUpdate'
+    Socio:
+      $ref: './socios.yaml#/components/schemas/Socio'
+    SocioInput:
+      $ref: './socios.yaml#/components/schemas/SocioInput'
+    SocioUpdate:
+      $ref: './socios.yaml#/components/schemas/SocioUpdate'
     Error:
       $ref: './liquidaciones.yaml#/components/schemas/Error'
   responses:

@@ -91,19 +91,11 @@ El sistema deberá organizarse siguiendo una arquitectura modular, validar datos
 
 ### **Andrea Maccan** (`amaccan`):
 
-- [x] Módulo Liquidaciones: modelo (`liquidacion.js`)
-- [x] Módulo Liquidaciones: capa de persistencia (`liquidacion.db.js` + `liquidaciones.json` con datos semilla)
-- [x] Módulo Liquidaciones: service (`liquidacion.service.js`) con validaciones cruzadas (empresa y empleado deben existir y estar activos)
-- [x] Módulo Liquidaciones: controller (`liquidacion.controller.js`) y rutas (`liquidacion.routes.js`) con CRUD completo
+- [x] Módulo Liquidaciones: modelo, controller, service, db, rutas con validaciones cruzadas (empresa y empleado activos y relacionados)
 - [x] Registrar auditoría en creación, modificación y baja lógica de liquidaciones
-- [x] Conectar el router de liquidaciones en `index.routes.js`
-- [ ] Módulo Socios: modelo (`socio.js`)
-- [ ] Módulo Socios: capa de persistencia (`socio.db.js` + `socios.json` con datos semilla)
-- [ ] Módulo Socios: service (`socio.service.js`) con validaciones (DNI/CUIT único, baja lógica)
-- [ ] Módulo Socios: controller (`socio.controller.js`) y rutas (`socio.routes.js`) con CRUD completo
-- [ ] Registrar auditoría en creación, modificación y baja lógica de socios
-- [ ] Conectar el router de socios en `index.routes.js`
-- [x] Documentación OpenAPI 3.0 del módulo (`docs/liquidaciones.yaml`) + bundle script (`npm run docs:bundle`)
+- [x] Módulo Socios: modelo, controller, service, db, rutas con validaciones (DNI único, participación entre 1 y 100)
+- [x] Registrar auditoría en creación, modificación y baja lógica de socios
+- [x] Documentación OpenAPI 3.0: `docs/liquidaciones.yaml`, `docs/socios.yaml`, `docs/index.yaml` + bundle script (`npm run docs:bundle`)
 
 ---
 
@@ -158,7 +150,7 @@ El sistema deberá organizarse siguiendo una arquitectura modular, validar datos
 - [x] AUDITORÍA
 - [x] REPORTE
 - [x] LIQUIDACIÓN
-- [ ] SOCIOS
+- [x] SOCIOS
 - [ ] QA/VALIDACIÓN
 
 ---
@@ -169,7 +161,7 @@ El sistema deberá organizarse siguiendo una arquitectura modular, validar datos
 |------------|---------|--------------|------------------------|
 | Sebastián Sosa | Auth (base), README, Setup Pug | 80% | Configurar Pug en Express (prerrequisito para Cecilia) |
 | Florencia Marcazzo | Empresa, Empleado, Novedad, Seguimiento, Auditoría, Reporte | 100% | — |
-| Andrea Maccan | Liquidaciones + Socios | 50% | Módulo Socios: CRUD completo + auditoría |
+| Andrea Maccan | Liquidaciones + Socios | 100% | — |
 | Cecilia Gómez | Todas las vistas Pug (todos los módulos) | 0% | Layout + inicio + 10 módulos de vistas + actualizar controllers |
 | Guillermo Aybar | QA + Integración + Video | 0% | Testing endpoints y vistas + merge + video |
 | **TODOS** | **VIDEO** | **0%** | Grabar y editar demostración |

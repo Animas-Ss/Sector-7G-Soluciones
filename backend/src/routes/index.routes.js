@@ -6,6 +6,7 @@ import { router as seguimientoRouter } from "./seguimiento.routes.js";
 import { router as auditoriaRouter } from "./auditoria.routes.js";
 import { router as reporteRouter } from "./reporte.routes.js";
 import { router as liquidacionRouter } from "./liquidacion.routes.js";
+import { router as socioRouter } from "./socio.routes.js";
 
 const router = Router();
 
@@ -19,6 +20,7 @@ router.get("/", (req, res) => {
       "GET /api/novedades",
       "GET /api/seguimientos",
       "GET /api/liquidaciones",
+      "GET /api/socios",
       "GET /resumen",
       "GET /auditoria",
     ],
@@ -30,6 +32,7 @@ router.use("/api/empleados", empleadoRouter);
 router.use("/api/novedades", novedadRouter);
 router.use("/api/seguimientos", seguimientoRouter);
 router.use("/api/liquidaciones", liquidacionRouter);
+router.use("/api/socios", socioRouter);
 router.use("/", auditoriaRouter);
 router.use("/", reporteRouter);
 

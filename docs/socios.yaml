@@ -1,0 +1,307 @@
+openapi: 3.0.3
+info:
+  title: Talento Evolutivo S.A. - Módulo Socios
+  description: >
+    Endpoints para la gestión de socios de la consultora Talento Evolutivo S.A.
+    Los socios son los dueños de la consultora, con una participación societaria
+    expresada en porcentaje.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000
+    description: Servidor local de desarrollo
+
+tags:
+  - name: Socios
+    description: CRUD de socios de la consultora
+
+paths:
+  /api/socios:
+    get:
+      tags: [Socios]
+      summary: Listar socios
+      description: >
+        Devuelve todos los socios. Acepta filtro opcional por estado activo/inactivo.
+      parameters:
+        - name: activo
+          in: query
+          schema:
+            type: boolean
+          example: true
+      responses:
+        '200':
+          description: Lista de socios
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Socio'
+              example:
+                - id: 1
+                  nombre: "Martina"
+                  apellido: "Olivares"
+                  dni: "22345678"
+                  email: "martina.olivares@talentoevolutivo.com"
+                  telefono: "1155667788"
+                  participacion: 40
+                  fechaIngreso: "2018-03-01"
+                  activo: true
+                  createdAt: "2018-03-01T09:00:00.000Z"
+                  updatedAt: "2018-03-01T09:00:00.000Z"
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    post:
+      tags: [Socios]
+      summary: Crear socio
+      description: >
+        Registra un nuevo socio. El DNI debe ser único en el sistema.
+        La participación debe ser un número entre 1 y 100.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SocioInput'
+            example:
+              nombre: "Martina"
+              apellido: "Olivares"
+              dni: "22345678"
+              email: "martina.olivares@talentoevolutivo.com"
+              telefono: "1155667788"
+              participacion: 40
+              fechaIngreso: "2018-03-01"
+      responses:
+        '201':
+          description: Socio creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Socio'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /api/socios/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        example: 1
+
+    get:
+      tags: [Socios]
+      summary: Obtener socio por ID
+      responses:
+        '200':
+          description: Socio encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Socio'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    put:
+      tags: [Socios]
+      summary: Actualizar socio
+      description: >
+        Actualiza uno o más campos del socio.
+        Si se modifica el DNI, se valida que no exista duplicado.
+        Si se modifica la participación, debe estar entre 1 y 100.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SocioUpdate'
+            example:
+              telefono: "1199887766"
+              participacion: 45
+      responses:
+        '200':
+          description: Socio actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Socio'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    delete:
+      tags: [Socios]
+      summary: Dar de baja socio (baja lógica)
+      description: >
+        Marca al socio como inactivo (activo = false).
+        No elimina el registro físicamente.
+      responses:
+        '200':
+          description: Socio dado de baja
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Socio'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+components:
+  schemas:
+    Socio:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        nombre:
+          type: string
+          example: "Martina"
+        apellido:
+          type: string
+          example: "Olivares"
+        dni:
+          type: string
+          example: "22345678"
+        email:
+          type: string
+          format: email
+          example: "martina.olivares@talentoevolutivo.com"
+        telefono:
+          type: string
+          nullable: true
+          example: "1155667788"
+        participacion:
+          type: number
+          minimum: 1
+          maximum: 100
+          description: Porcentaje de participación societaria
+          example: 40
+        fechaIngreso:
+          type: string
+          format: date
+          example: "2018-03-01"
+        activo:
+          type: boolean
+          example: true
+        createdAt:
+          type: string
+          format: date-time
+          example: "2018-03-01T09:00:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2018-03-01T09:00:00.000Z"
+
+    SocioInput:
+      type: object
+      required: [nombre, apellido, dni, email, participacion, fechaIngreso]
+      properties:
+        nombre:
+          type: string
+          example: "Martina"
+        apellido:
+          type: string
+          example: "Olivares"
+        dni:
+          type: string
+          example: "22345678"
+        email:
+          type: string
+          format: email
+          example: "martina.olivares@talentoevolutivo.com"
+        telefono:
+          type: string
+          nullable: true
+          example: "1155667788"
+        participacion:
+          type: number
+          minimum: 1
+          maximum: 100
+          example: 40
+        fechaIngreso:
+          type: string
+          format: date
+          example: "2018-03-01"
+
+    SocioUpdate:
+      type: object
+      minProperties: 1
+      description: Al menos un campo es requerido.
+      properties:
+        nombre:
+          type: string
+        apellido:
+          type: string
+        dni:
+          type: string
+        email:
+          type: string
+          format: email
+        telefono:
+          type: string
+          nullable: true
+        participacion:
+          type: number
+          minimum: 1
+          maximum: 100
+        fechaIngreso:
+          type: string
+          format: date
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: boolean
+          example: true
+        statusCode:
+          type: integer
+          example: 400
+        message:
+          type: string
+          example: "Detalle del error"
+
+  responses:
+    BadRequest:
+      description: Datos inválidos o restricción de negocio
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: true
+            statusCode: 400
+            message: "Ya existe un socio registrado con el DNI 22345678."
+    NotFound:
+      description: Recurso no encontrado
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: true
+            statusCode: 404
+            message: "Socio no encontrado."
+    ServerError:
+      description: Error interno del servidor
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: true
+            statusCode: 500
+            message: "Error interno del servidor"

@@ -6,22 +6,26 @@ import {
   obtenerEmpleado,
 } from "../services/empleado.service.js";
 
-export const getEmpleados = async (req, res) => {
-  res.status(200).json(await listarEmpleados(req.query));
-};
+class EmpleadoController {
+  async getAll(req, res) {
+    res.status(200).json(await listarEmpleados(req.query));
+  }
 
-export const getEmpleado = async (req, res) => {
-  res.status(200).json(await obtenerEmpleado(req.params.id));
-};
+  async getById(req, res) {
+    res.status(200).json(await obtenerEmpleado(req.params.id));
+  }
 
-export const postEmpleado = async (req, res) => {
-  res.status(201).json(await crearEmpleado(req.body));
-};
+  async create(req, res) {
+    res.status(201).json(await crearEmpleado(req.body));
+  }
 
-export const putEmpleado = async (req, res) => {
-  res.status(200).json(await actualizarEmpleado(req.params.id, req.body));
-};
+  async update(req, res) {
+    res.status(200).json(await actualizarEmpleado(req.params.id, req.body));
+  }
 
-export const deleteEmpleado = async (req, res) => {
-  res.status(200).json(await eliminarEmpleado(req.params.id));
-};
+  async delete(req, res) {
+    res.status(200).json(await eliminarEmpleado(req.params.id));
+  }
+}
+
+export default new EmpleadoController();

@@ -12,9 +12,10 @@ html(lang="es")
       li { background: #44475a; padding: 5px 15px; border-radius: 20px; font-size: 0.9em; }
   body
     div.card
-      h1= mensaje
-      p ¡Pug está configurado y renderizando datos dinámicos correctamente!
-      p Tecnologías en uso:
-      ul
-        each item in tecnologias
-          li= item
+      h1= mensaje || 'Vista Dinámica'
+      p ¡Esta vista Pug fue cargada automáticamente!
+      if tecnologias
+        p Tecnologías en uso:
+        ul
+          each item in tecnologias
+            li= item

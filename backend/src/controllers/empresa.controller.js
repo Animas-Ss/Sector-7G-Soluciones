@@ -6,22 +6,26 @@ import {
   obtenerEmpresa,
 } from "../services/empresa.service.js";
 
-export const getEmpresas = async (req, res) => {
-  res.status(200).json(await listarEmpresas(req.query));
-};
+class EmpresaController {
+  async getAll(req, res) {
+    res.status(200).json(await listarEmpresas(req.query));
+  }
 
-export const getEmpresa = async (req, res) => {
-  res.status(200).json(await obtenerEmpresa(req.params.id));
-};
+  async getById(req, res) {
+    res.status(200).json(await obtenerEmpresa(req.params.id));
+  }
 
-export const postEmpresa = async (req, res) => {
-  res.status(201).json(await crearEmpresa(req.body));
-};
+  async create(req, res) {
+    res.status(201).json(await crearEmpresa(req.body));
+  }
 
-export const putEmpresa = async (req, res) => {
-  res.status(200).json(await actualizarEmpresa(req.params.id, req.body));
-};
+  async update(req, res) {
+    res.status(200).json(await actualizarEmpresa(req.params.id, req.body));
+  }
 
-export const deleteEmpresa = async (req, res) => {
-  res.status(200).json(await eliminarEmpresa(req.params.id));
-};
+  async delete(req, res) {
+    res.status(200).json(await eliminarEmpresa(req.params.id));
+  }
+}
+
+export default new EmpresaController();

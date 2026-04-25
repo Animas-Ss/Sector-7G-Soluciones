@@ -34,17 +34,5 @@
     "activo": true,
     "createdAt": "2026-04-15T09:00:00.000Z",
     "updatedAt": "2026-04-15T09:00:00.000Z"
-  },
-  {
-    "nombre": "Daniela",
-    "apellido": "Barrotti",
-    "dni": "32888000",
-    "puesto": "Gerente de Servicios",
-    "email": "daniela.barrotti@gmail.com",
-    "empresaId": 3,
-    "activo": false,
-    "createdAt": "2026-04-25T17:26:08.090Z",
-    "updatedAt": "2026-04-25T18:18:31.962Z",
-    "id": 4
   }
 ]

@@ -1,0 +1,87 @@
+extends ../layout 
+
+block content
+  style.
+    .container { width: 100%; max-width: 600px; margin: 0 auto; }
+    .card-form { background-color: #2a2a40; padding: 30px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+    .card-form h1 { color: #50fa7b; margin-top: 0; text-align: center; }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; color: #8be9fd; font-weight: bold; margin-bottom: 8px; font-size: 0.9em; }
+    .form-control { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #44475a; background-color: #1e1e2f; color: #f8f8f2; box-sizing: border-box; }
+    .form-control:focus { outline: none; border-color: #bd93f9; }
+    .btn-submit { width: 100%; background-color: #ff79c6; color: #282a36; padding: 12px; border: none; border-radius: 6px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
+    .btn-submit:hover { background-color: #ff92d0; }
+    .btn-volver { display: inline-block; margin-bottom: 20px; color: #6272a4; text-decoration: none; font-weight: bold; }
+    .btn-volver:hover { color: #f8f8f2; }
+
+
+  .container 
+    a.btn-volver(href="/api/empleados") Cancelar y volver
+
+    .card-form
+      //- Cambiar el título de acuerdo al empleado
+      h1= empleado ? 'Editar Empleado' : 'Nuevo Empleado'
+
+      form#empleadoForm
+        .form-group
+          label(for="nombre") Nombre:
+          input#nombre.form-control(type="text", name="nombre", value=empleado ? empleado.nombre : '', required)
+        
+        .form-group
+          label(for="apellido") Apellido:
+          input#apellido.form-control(type="text", name="apellido", value=empleado ? empleado.apellido : '', required)
+        
+        .form-group
+          label(for="dni") DNI:
+          input#dni.form-control(type="text", name="dni", value=empleado ? empleado.dni : '', required)
+        
+        .form-group
+          label(for="email") Correo Electrónico:
+          input#email.form-control(type="email", name="email", value=empleado ? empleado.email : '', required)
+          
+        .form-group
+          label(for="puesto") Puesto:
+          input#puesto.form-control(type="text", name="puesto", value=empleado ? empleado.puesto : '', required)
+        
+        .form-group
+          label(for="empresaId") Asignar a Empresa:
+          select#empresaId.form-control(name="empresaId", required)
+            option(value="" disabled selected=!empleado) -- Seleccione una empresa --
+            if empresas
+              each empresa in empresas
+                //- En edición, si el ID coincide opción preseleccionada
+                option(value=empresa.id selected=(empleado && empleado.empresaId === empresa.id))= empresa.nombre
+
+        button.btn-submit(type="submit")= empleado ? 'Guardar Cambios' : 'Registrar Empleado'
+
+  script.
+    document.getElementById('empleadoForm').addEventListener('submit', async (e) => {
+      e.preventDefault(); // Evita recargar la pagina
+
+      const formData = new FormData(e.target);
+      const data = Object.fromEntries(formData.entries());
+      
+      const isEdit = #{empleado ? 'true' : 'false'};
+      const empleadoId = '#{empleado ? empleado.id : ""}';
+      
+      const url = isEdit ? `/api/empleados/${empleadoId}` : '/api/empleados';
+      const method = isEdit ? 'PUT' : 'POST';
+
+      try {
+        const response = await fetch(url, {
+          method: method,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+          window.location.href = '/api/empleados';
+        } else {
+          const errorData = await response.json();
+          alert('Error: ' + (errorData.message || 'Verificá que los datos sean correctos.'));
+        }
+      } catch (error) {
+        console.error(error);
+        alert('Error de conexión con el servidor.');
+      }
+    });

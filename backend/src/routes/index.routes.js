@@ -1,48 +1,72 @@
 import { Router } from "express";
-import { router as empresaRouter } from "./empresa.routes.js";
-import { router as empleadoRouter } from "./empleado.routes.js";
-import { router as novedadRouter } from "./novedad.routes.js";
-import { router as seguimientoRouter } from "./seguimiento.routes.js";
-import { router as auditoriaRouter } from "./auditoria.routes.js";
-import { router as reporteRouter } from "./reporte.routes.js";
-import { router as liquidacionRouter } from "./liquidacion.routes.js";
-import { router as socioRouter } from "./socio.routes.js";
+import { readdirSync, existsSync } from "fs";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
 
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const PATH_ROUTER = __dirname;
 const router = Router();
 
+const cleanFileName = (fileName) => {
+    return fileName.split('.').shift();
+}
+
+const loadedEndpoints = [];
+
+readdirSync(PATH_ROUTER).filter((fileName) => {
+   const cleanName = cleanFileName(fileName);
+   if(cleanName !== "index"){
+       console.log(`Cargando ruta dinámica: /api/${cleanName}`);
+       loadedEndpoints.push(`GET /api/${cleanName}`);
+       import(`./${fileName}`).then((moduleRouter) => {
+         router.use(`/api/${cleanName}`, moduleRouter.router);
+       }).catch(error => {
+         console.error(`Error al cargar la ruta /api/${cleanName}:`, error);
+       });
+   }
+});
+
+const VIEWS_PATH = join(__dirname, '../views');
+
 router.get("/", (req, res) => {
+  res.render("index", {
+    titulo: "Panel de Control"
+  });
+});
+
+router.get("/api", (req, res) => {
+  const currentEndpoints = [...loadedEndpoints];
+
+  // Escanea la carpeta en tiempo real para que no requiera reinicios
+  const views = readdirSync(VIEWS_PATH).filter(f => f.endsWith('.pug'));
+  views.forEach(f => {
+      currentEndpoints.push(`GET /${f.replace('.pug', '')} (Vista Pug)`);
+  });
+
   res.status(200).json({
     sistema: "Talento Evolutivo S.A.",
     descripcion: "API REST para seguimiento administrativo de liquidacion de haberes.",
-    endpoints: [
-      "GET /api/empresas",
-      "GET /api/empleados",
-      "GET /api/novedades",
-      "GET /api/seguimientos",
-      "GET /api/liquidaciones",
-      "GET /api/socios",
-      "GET /resumen",
-      "GET /auditoria",
-      "GET /pug"
-    ],
+    endpoints: currentEndpoints.sort(),
   });
 });
 
-router.get("/pug", (req, res) => {
-  res.render("index", {
-    titulo: "Demo de Pug",
-    mensaje: "¡Bienvenido a Sector 7G!",
-    tecnologias: ["Node.js", "Express", "Pug", "Nodemon"]
-  });
+router.get("/index", (req, res) => {
+  res.redirect("/");
 });
 
-router.use("/api/empresas", empresaRouter);
-router.use("/api/empleados", empleadoRouter);
-router.use("/api/novedades", novedadRouter);
-router.use("/api/seguimientos", seguimientoRouter);
-router.use("/api/liquidaciones", liquidacionRouter);
-router.use("/api/socios", socioRouter);
-router.use("/", auditoriaRouter);
-router.use("/", reporteRouter);
+// Enrutador Wildcard para Vistas Pug (Debe ir al final)
+// Ataja cualquier ruta /algo y renderiza el pug si existe
+router.get("/:viewName", (req, res, next) => {
+    const viewName = req.params.viewName;
+    const filePath = join(VIEWS_PATH, `${viewName}.pug`);
+    
+    if (existsSync(filePath)) {
+        res.render(viewName, {
+            titulo: viewName.charAt(0).toUpperCase() + viewName.slice(1)
+        });
+    } else {
+        next(); // Si no existe el archivo, pasa al middleware 404
+    }
+});
 
 export { router };

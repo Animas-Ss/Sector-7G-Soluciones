@@ -1,0 +1,75 @@
+extends ../layout
+
+block content
+  style.
+    .container { width: 100%; max-width: 1000px; }
+    .card-detalle { background-color: #2a2a40; padding: 30px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.3); margin-bottom: 30px; }
+    .card-detalle h1 { color: #ff79c6; margin-top: 0; }
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
+    .info-item { border-bottom: 1px solid #44475a; padding: 10px 0; }
+    .info-label { color: #6272a4; font-size: 0.9em; font-weight: bold; text-transform: uppercase; }
+    .section-title { color: #bd93f9; margin: 40px 0 20px; border-left: 4px solid #bd93f9; padding-left: 15px; }
+    .btn-volver { display: inline-block; margin-top: 20px; color: #8be9fd; text-decoration: none; font-weight: bold; }
+    .btn-volver:hover { text-decoration: underline; }
+    .tabla-simple { width: 100%; border-collapse: collapse; background-color: #2a2a40; border-radius: 8px; overflow: hidden; }
+    .tabla-simple th, .tabla-simple td { padding: 12px; text-align: left; border-bottom: 1px solid #44475a; font-size: 0.9em; }
+    .tabla-simple th { background-color: #44475a; color: #f8f8f2; }
+
+  .container
+    a.btn-volver(href="/api/empresas") Volver
+
+    .card-detalle
+      h1= empresa.nombre
+      .info-grid
+        .info-item
+          .info-label CUIT
+          div= empresa.cuit
+        .info-item
+          .info-label Rubro
+          div= empresa.rubro
+        .info-item
+          .info-label Contacto
+          div= empresa.contacto
+        .info-item
+          .info-label Estado
+          div
+            if empresa.activo
+              span(style="color: #50fa7b") Activo
+            else
+              span(style="color: #ff5555") Inactivo
+
+    //- Sección de Empleados
+    h2.section-title Empleados de la firma
+    if empresa.empleados && empresa.empleados.length > 0
+      table.tabla-simple
+        thead
+          tr
+            th Nombre y Apellido
+            th Puesto
+            th Estado
+        tbody
+          each emp in empresa.empleados
+            tr
+              td= `${emp.nombre} ${emp.apellido}`
+              td= emp.puesto
+              td= emp.activo ? 'Activo' : 'Inactivo'
+    else
+      p(style="color: #6272a4") No hay empleados vinculados a esta empresa.
+
+    //- Sección de Novedades
+    h2.section-title Novedades de liquidación
+    if empresa.novedades && empresa.novedades.length > 0
+      table.tabla-simple
+        thead
+          tr
+            th Tipo
+            th Estado
+            th ID Empleado
+        tbody
+          each nov in empresa.novedades
+            tr
+              td= nov.tipo
+              td= nov.estado
+              td= nov.empleadoId
+    else
+      p(style="color: #6272a4") No se registran novedades para esta empresa.

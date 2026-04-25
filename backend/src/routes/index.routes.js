@@ -23,7 +23,16 @@ router.get("/", (req, res) => {
       "GET /api/socios",
       "GET /resumen",
       "GET /auditoria",
+      "GET /pug"
     ],
+  });
+});
+
+router.get("/pug", (req, res) => {
+  res.render("index", {
+    titulo: "Demo de Pug",
+    mensaje: "¡Bienvenido a Sector 7G!",
+    tecnologias: ["Node.js", "Express", "Pug", "Nodemon"]
   });
 });
 

@@ -1,0 +1,56 @@
+openapi: 3.0.3
+info:
+  title: Talento Evolutivo S.A. - Documentación API
+  description: >
+    Documentación consolidada de todos los módulos de la API.
+    Cada módulo está definido en su propio archivo dentro de esta carpeta
+    y se referencia desde aquí.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000
+    description: Servidor local de desarrollo
+
+tags:
+  - name: Liquidaciones
+    description: CRUD de liquidaciones de haberes
+  - name: Socios
+    description: CRUD de socios de la consultora
+
+# Paths importados desde cada módulo
+paths:
+  /api/liquidaciones:
+    $ref: './liquidaciones.yaml#/paths/~1api~1liquidaciones'
+  /api/liquidaciones/{id}:
+    $ref: './liquidaciones.yaml#/paths/~1api~1liquidaciones~1{id}'
+  /api/socios:
+    $ref: './socios.yaml#/paths/~1api~1socios'
+  /api/socios/{id}:
+    $ref: './socios.yaml#/paths/~1api~1socios~1{id}'
+
+# Components consolidados desde cada módulo
+components:
+  schemas:
+    Liquidacion:
+      $ref: './liquidaciones.yaml#/components/schemas/Liquidacion'
+    LiquidacionView:
+      $ref: './liquidaciones.yaml#/components/schemas/LiquidacionView'
+    LiquidacionInput:
+      $ref: './liquidaciones.yaml#/components/schemas/LiquidacionInput'
+    LiquidacionUpdate:
+      $ref: './liquidaciones.yaml#/components/schemas/LiquidacionUpdate'
+    Socio:
+      $ref: './socios.yaml#/components/schemas/Socio'
+    SocioInput:
+      $ref: './socios.yaml#/components/schemas/SocioInput'
+    SocioUpdate:
+      $ref: './socios.yaml#/components/schemas/SocioUpdate'
+    Error:
+      $ref: './liquidaciones.yaml#/components/schemas/Error'
+  responses:
+    BadRequest:
+      $ref: './liquidaciones.yaml#/components/responses/BadRequest'
+    NotFound:
+      $ref: './liquidaciones.yaml#/components/responses/NotFound'
+    ServerError:
+      $ref: './liquidaciones.yaml#/components/responses/ServerError'

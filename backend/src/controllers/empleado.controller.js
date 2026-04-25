@@ -5,14 +5,42 @@ import {
   listarEmpleados,
   obtenerEmpleado,
 } from "../services/empleado.service.js";
+ 
+//-importa la lista de empresas para asignar un empleado a la empresa
+import { listarEmpresas } from "../services/empresa.service.js";
 
 class EmpleadoController {
   async getAll(req, res) {
-    res.status(200).json(await listarEmpleados(req.query));
+    const empleados = await listarEmpleados(req.query);
+    res.render('empleados/index',{ 
+      titulo: 'Nómina de Empleados',
+      empleados
+    });
+  }
+
+  async getForm(req, res) {
+    const { id } = req.params;
+    // combo box empreas
+    const empresas = await listarEmpresas({}); 
+    
+    if (id) {
+      const empleado = await obtenerEmpleado(id);
+      res.render('empleados/form', { 
+        titulo: 'Editar Empleado', 
+        empleado, empresas });
+    } else {
+      res.render('empleados/form', { 
+        titulo: 'Nuevo Empleado', 
+        empleado: null, empresas });
+    }
   }
 
   async getById(req, res) {
-    res.status(200).json(await obtenerEmpleado(req.params.id));
+    const empleado = await obtenerEmpleado(req.params.id);
+    res.render('empleados/detalle', {
+      titulo: `Detalle: ${empleado.nombre} ${empleado.apellido}`,
+      empleado
+    });
   }
 
   async create(req, res) {

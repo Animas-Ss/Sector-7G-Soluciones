@@ -29,8 +29,14 @@ readdirSync(PATH_ROUTER).filter((fileName) => {
 const VIEWS_PATH = join(__dirname, '../views');
 
 router.get("/", (req, res) => {
+  res.render("index", {
+    titulo: "Panel de Control"
+  });
+});
+
+router.get("/api", (req, res) => {
   const currentEndpoints = [...loadedEndpoints];
-  
+
   // Escanea la carpeta en tiempo real para que no requiera reinicios
   const views = readdirSync(VIEWS_PATH).filter(f => f.endsWith('.pug'));
   views.forEach(f => {
@@ -44,6 +50,10 @@ router.get("/", (req, res) => {
   });
 });
 
+router.get("/index", (req, res) => {
+  res.redirect("/");
+});
+
 // Enrutador Wildcard para Vistas Pug (Debe ir al final)
 // Ataja cualquier ruta /algo y renderiza el pug si existe
 router.get("/:viewName", (req, res, next) => {
@@ -52,9 +62,7 @@ router.get("/:viewName", (req, res, next) => {
     
     if (existsSync(filePath)) {
         res.render(viewName, {
-            titulo: `Vista ${viewName}`,
-            mensaje: `¡Bienvenido a la vista ${viewName}!`,
-            tecnologias: ["Node.js", "Express", "Pug", "Enrutador Totalmente Dinámico"]
+            titulo: viewName.charAt(0).toUpperCase() + viewName.slice(1)
         });
     } else {
         next(); // Si no existe el archivo, pasa al middleware 404

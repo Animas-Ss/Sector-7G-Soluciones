@@ -12,6 +12,9 @@ router.route("/")
     asyncHandler(EmpresaController.create)
   );
 
+  router.get("/form", asyncHandler(EmpresaController.getForm));
+  router.get("/form/:id", asyncHandler(EmpresaController.getForm));
+
 router.route("/:id")
   .get(asyncHandler(EmpresaController.getById))
   .put(requireBody, asyncHandler(EmpresaController.update))

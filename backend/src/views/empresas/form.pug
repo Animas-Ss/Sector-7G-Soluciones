@@ -1,0 +1,77 @@
+extends ../layout
+
+block content
+  style.
+    .container { width: 100%; max-width: 600px; margin: 0 auto; }
+    .card-form { background-color: #2a2a40; padding: 30px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+    .card-form h1 { color: #50fa7b; margin-top: 0; text-align: center; }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; color: #8be9fd; font-weight: bold; margin-bottom: 8px; font-size: 0.9em; }
+    .form-control { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #44475a; background-color: #1e1e2f; color: #f8f8f2; box-sizing: border-box; }
+    .form-control:focus { outline: none; border-color: #bd93f9; }
+    .btn-submit { width: 100%; background-color: #ff79c6; color: #282a36; padding: 12px; border: none; border-radius: 6px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
+    .btn-submit:hover { background-color: #ff92d0; }
+    .btn-volver { display: inline-block; margin-bottom: 20px; color: #6272a4; text-decoration: none; font-weight: bold; }
+    .btn-volver:hover { color: #f8f8f2; }
+
+  .container
+    a.btn-volver(href="/api/empresas") Cancelar y volver
+
+    .card-form
+      //- Cambiar el título de acuerdo a la empresa
+      h1= empresa ? 'Editar Empresa' : 'Nueva Empresa'
+
+      form#empresaForm
+        .form-group
+          label(for="nombre") Razón Social / Nombre:
+          input#nombre.form-control(type="text", name="nombre", value=empresa ? empresa.nombre : '', required)
+        
+        .form-group
+          label(for="cuit") CUIT:
+          input#cuit.form-control(type="text", name="cuit", value=empresa ? empresa.cuit : '', required)
+        
+        .form-group
+          label(for="rubro") Rubro:
+          input#rubro.form-control(type="text", name="rubro", value=empresa ? empresa.rubro : '', required)
+        
+        .form-group
+          label(for="contacto") Contacto (Email o Teléfono):
+          input#contacto.form-control(type="text", name="contacto", value=empresa ? empresa.contacto : '', required)
+
+        button.btn-submit(type="submit")= empresa ? 'Guardar Cambios' : 'Registrar Empresa'
+
+  //- Lógica de cliente para enviar los datos
+  script.
+    document.getElementById('empresaForm').addEventListener('submit', async (e) => {
+      e.preventDefault(); // Evita que la página se recargue
+
+ 
+      const formData = new FormData(e.target);
+      const data = Object.fromEntries(formData.entries());
+      
+      // Variables de Pug a JavaScript para saber si creamos o editamos
+      const isEdit = #{empresa ? 'true' : 'false'};
+      const empresaId = '#{empresa ? empresa.id : ""}';
+      
+      const url = isEdit ? `/api/empresas/${empresaId}` : '/api/empresas';
+      const method = isEdit ? 'PUT' : 'POST';
+
+      try {
+        const response = await fetch(url, {
+          method: method,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+ 
+          window.location.href = '/api/empresas';
+        } else {
+          const errorData = await response.json();
+          alert('Error: ' + (errorData.message || 'No se pudo guardar la empresa'));
+        }
+      } catch (error) {
+        console.error(error);
+        alert('Ocurrió un error de red al intentar guardar.');
+      }
+    });

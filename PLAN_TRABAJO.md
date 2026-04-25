@@ -111,10 +111,10 @@ El sistema deberá organizarse siguiendo una arquitectura modular, validar datos
 
 > Todas las plantillas Pug. Requiere que Sebastián complete la configuración de Pug primero.
 
-- [ ] Layout base (`views/layout.pug`): navbar con links a todos los módulos, bloque de contenido
-- [ ] Vista inicio (`views/index.pug`): bienvenida con links a cada sección
-- [ ] Vistas de Empresas: `views/empresas/index.pug`, `detalle.pug`, `form.pug`
-- [ ] Vistas de Empleados: `views/empleados/index.pug`, `detalle.pug`, `form.pug`
+- [x] Layout base (`views/layout.pug`): navbar con links a todos los módulos, bloque de contenido
+- [x] Vista inicio (`views/index.pug`): bienvenida con links a cada sección
+- [x] Vistas de Empresas: `views/empresas/index.pug`, `detalle.pug`, `form.pug`
+- [x] Vistas de Empleados: `views/empleados/index.pug`, `detalle.pug`, `form.pug`
 - [ ] Vistas de Novedades: `views/novedades/index.pug` (con filtros), `detalle.pug` (con seguimientos), `form.pug`
 - [ ] Vistas de Seguimiento: `views/seguimiento/index.pug`, `form.pug`
 - [ ] Vistas de Liquidaciones: `views/liquidaciones/index.pug`, `detalle.pug`, `form.pug`

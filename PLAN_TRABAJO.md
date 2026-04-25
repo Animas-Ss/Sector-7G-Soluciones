@@ -67,7 +67,7 @@ El sistema deberá organizarse siguiendo una arquitectura modular, validar datos
 - [x] Estructura base de autenticación: `auth.routes.js`, `auth.controllers.js`, `auth.services.js`, `auth.models.js` (esqueleto)
 - [x] Simplificación de `index.js` (configuración básica sin middleware de errores)
 - [x] Archivos placeholder (`index.txt`) en `config/`, `libs/`, `middlewares/`, `interfaces/`
-- [ ] Configurar Pug en Express (`app.set('view engine', 'pug')`, carpeta `views/`) — **prerrequisito para el trabajo de Cecilia**
+- [x] Configurar Pug en Express (`app.set('view engine', 'pug')`, carpeta `views/`)
 
 ---
 
@@ -99,9 +99,7 @@ El sistema deberá organizarse siguiendo una arquitectura modular, validar datos
 
 ---
 
-### **Cecilia Gómez** (``):
-
-> Todas las plantillas Pug. Requiere que Sebastián complete la configuración de Pug primero.
+### **Cecilia Gómez** (`cesugomez`):
 
 - [x] Layout base (`views/layout.pug`): navbar con links a todos los módulos, bloque de contenido
 - [x] Vista inicio (`views/index.pug`): bienvenida con links a cada sección
@@ -121,7 +119,6 @@ El sistema deberá organizarse siguiendo una arquitectura modular, validar datos
 
 - [ ] QA: probar todos los endpoints y vistas con casos válidos e inválidos
 - [ ] QA: verificar validaciones cruzadas entre módulos (empresa→empleado→novedad→seguimiento)
-- [ ] Integración: merge de `dev` → `main` incluyendo todos los módulos y vistas
 - [ ] Verificar que el servidor levanta correctamente con `npm start` tras el merge
 - [ ] Coordinar y grabar el video grupal de 10 minutos
 

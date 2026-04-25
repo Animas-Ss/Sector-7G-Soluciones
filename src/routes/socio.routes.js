@@ -3,6 +3,7 @@ import {
   deleteSocio,
   getSocio,
   getSocios,
+  getFormSocio,
   postSocio,
   putSocio,
 } from "../controllers/socio.controller.js";
@@ -12,6 +13,10 @@ import { requireBody, requireFields } from "../middlewares/validation.middleware
 const router = Router();
 
 router.get("/", asyncHandler(getSocios));
+
+router.get("/form", asyncHandler(getFormSocio));
+router.get("/form/:id", asyncHandler(getFormSocio));
+
 router.get("/:id", asyncHandler(getSocio));
 router.post(
   "/",

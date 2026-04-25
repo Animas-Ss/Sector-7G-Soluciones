@@ -1,0 +1,165 @@
+openapi: 3.0.3
+info:
+  title: Talento Evolutivo S.A. - Módulo Seguimientos
+  description: >
+    Endpoints para registrar y consultar el seguimiento de las novedades laborales.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000
+    description: Servidor local de desarrollo
+
+tags:
+  - name: Seguimientos
+    description: Seguimiento de novedades
+
+paths:
+  /api/seguimientos:
+    get:
+      tags: [Seguimientos]
+      summary: Listar seguimientos
+      description: Devuelve la lista de seguimientos enriquecida con datos de la novedad, empleado y empresa.
+      parameters:
+        - name: empresaId
+          in: query
+          description: Filtra seguimientos de novedades pertenecientes a una empresa.
+          schema: { type: integer }
+        - name: novedadId
+          in: query
+          schema: { type: integer }
+        - name: activo
+          in: query
+          schema: { type: boolean }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SeguimientoView'
+
+    post:
+      tags: [Seguimientos]
+      summary: Crear seguimiento
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SeguimientoInput'
+            example:
+              novedadId: 1
+              fecha: "2026-04-15"
+              responsable: "Mesa operativa"
+              comentario: "Seguimiento inicial registrado."
+      responses:
+        '201':
+          description: Creado
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /api/seguimientos/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema: { type: integer }
+    get:
+      tags: [Seguimientos]
+      summary: Obtener detalle de seguimiento
+      responses:
+        '200':
+          description: OK
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    put:
+      tags: [Seguimientos]
+      summary: Actualizar seguimiento
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SeguimientoUpdate'
+            example:
+              comentario: "Comentario actualizado."
+      responses:
+        '200':
+          description: Actualizado
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      tags: [Seguimientos]
+      summary: Dar de baja seguimiento (baja lógica)
+      responses:
+        '200':
+          description: Baja exitosa
+
+components:
+  schemas:
+    Seguimiento:
+      type: object
+      properties:
+        id: { type: integer }
+        novedadId: { type: integer }
+        fecha: { type: string, format: date }
+        responsable: { type: string }
+        comentario: { type: string }
+        activo: { type: boolean }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    SeguimientoView:
+      allOf:
+        - $ref: '#/components/schemas/Seguimiento'
+        - type: object
+          properties:
+            novedad: { type: object }
+            empleado: { type: object }
+            empresa: { type: object }
+
+    SeguimientoInput:
+      type: object
+      required: [novedadId, fecha, responsable, comentario]
+      properties:
+        novedadId: { type: integer }
+        fecha: { type: string, format: date }
+        responsable: { type: string }
+        comentario: { type: string }
+
+    SeguimientoUpdate:
+      type: object
+      minProperties: 1
+      properties:
+        novedadId: { type: integer }
+        fecha: { type: string, format: date }
+        responsable: { type: string }
+        comentario: { type: string }
+
+    Error:
+      type: object
+      properties:
+        error: { type: boolean, example: true }
+        statusCode: { type: integer, example: 400 }
+        message: { type: string, example: "Error detail" }
+
+  responses:
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    ServerError:
+      description: Server Error
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }

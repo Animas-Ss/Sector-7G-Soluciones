@@ -12,13 +12,39 @@ servers:
     description: Servidor local de desarrollo
 
 tags:
+  - name: Empresas
+    description: CRUD de empresas clientes
+  - name: Empleados
+    description: CRUD de empleados de las empresas
+  - name: Novedades
+    description: Gestión de novedades laborales
+  - name: Seguimientos
+    description: Seguimiento de novedades
   - name: Liquidaciones
     description: CRUD de liquidaciones de haberes
   - name: Socios
     description: CRUD de socios de la consultora
+  - name: Reportes
+    description: Indicadores y auditoría
 
 # Paths importados desde cada módulo
 paths:
+  /api/empresas:
+    $ref: './empresas.yaml#/paths/~1api~1empresas'
+  /api/empresas/{id}:
+    $ref: './empresas.yaml#/paths/~1api~1empresas~1{id}'
+  /api/empleados:
+    $ref: './empleados.yaml#/paths/~1api~1empleados'
+  /api/empleados/{id}:
+    $ref: './empleados.yaml#/paths/~1api~1empleados~1{id}'
+  /api/novedades:
+    $ref: './novedades.yaml#/paths/~1api~1novedades'
+  /api/novedades/{id}:
+    $ref: './novedades.yaml#/paths/~1api~1novedades~1{id}'
+  /api/seguimientos:
+    $ref: './seguimientos.yaml#/paths/~1api~1seguimientos'
+  /api/seguimientos/{id}:
+    $ref: './seguimientos.yaml#/paths/~1api~1seguimientos~1{id}'
   /api/liquidaciones:
     $ref: './liquidaciones.yaml#/paths/~1api~1liquidaciones'
   /api/liquidaciones/{id}:
@@ -27,8 +53,12 @@ paths:
     $ref: './socios.yaml#/paths/~1api~1socios'
   /api/socios/{id}:
     $ref: './socios.yaml#/paths/~1api~1socios~1{id}'
+  /api/resumen:
+    $ref: './resumen.yaml#/paths/~1api~1resumen'
+  /api/auditoria:
+    $ref: './resumen.yaml#/paths/~1api~1auditoria'
 
-# Components consolidados desde cada módulo
+# Components consolidados
 components:
   schemas:
     Liquidacion:

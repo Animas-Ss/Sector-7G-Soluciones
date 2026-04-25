@@ -1,0 +1,113 @@
+openapi: 3.0.3
+info:
+  title: Talento Evolutivo S.A. - Módulo Reportes y Auditoría
+  description: >
+    Endpoints para la obtención de indicadores estratégicos (resumen)
+    y consulta de logs de auditoría del sistema.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000
+    description: Servidor local de desarrollo
+
+tags:
+  - name: Reportes
+    description: Indicadores operativos y de impacto
+  - name: Auditoria
+    description: Registro histórico de acciones
+
+paths:
+  /api/resumen:
+    get:
+      tags: [Reportes]
+      summary: Obtener resumen operativo e indicadores
+      description: >
+        Devuelve métricas como cantidad de empresas activas, novedades pendientes,
+        carga operativa estimada y simulación de impacto organizacional.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Resumen'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /api/auditoria:
+    get:
+      tags: [Auditoria]
+      summary: Consultar logs de auditoría
+      description: >
+        Devuelve el historial de acciones realizadas sobre las entidades del sistema.
+      parameters:
+        - name: entidad
+          in: query
+          description: Filtrar por tipo de entidad (empresa, empleado, novedad, etc.)
+          schema: { type: string }
+        - name: accion
+          in: query
+          description: Filtrar por tipo de acción (creacion, modificacion, baja_logica, cambio_estado)
+          schema: { type: string }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Auditoria'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+components:
+  schemas:
+    Resumen:
+      type: object
+      properties:
+        indicadores:
+          type: object
+          properties:
+            totalEmpresas: { type: integer }
+            totalEmpleados: { type: integer }
+            novedadesPendientes: { type: integer }
+            cargaOperativa: { type: string }
+        impacto:
+          type: object
+          description: Datos de simulación de impacto
+
+    Auditoria:
+      type: object
+      properties:
+        id: { type: integer }
+        fecha: { type: string, format: date-time }
+        entidad: { type: string }
+        entidadId: { type: integer }
+        accion: { type: string }
+        detalle: { type: string }
+        responsable: { type: string }
+
+    Error:
+      type: object
+      properties:
+        error: { type: boolean, example: true }
+        statusCode: { type: integer, example: 400 }
+        message: { type: string, example: "Error detail" }
+
+  responses:
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    ServerError:
+      description: Server Error
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }

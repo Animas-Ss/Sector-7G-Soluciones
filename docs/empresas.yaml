@@ -1,0 +1,246 @@
+openapi: 3.0.3
+info:
+  title: Talento Evolutivo S.A. - Módulo Empresas
+  description: >
+    Endpoints para la gestión de empresas clientes de la consultora.
+    Permite el registro, consulta, actualización y baja lógica.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000
+    description: Servidor local de desarrollo
+
+tags:
+  - name: Empresas
+    description: CRUD de empresas clientes
+
+paths:
+  /api/empresas:
+    get:
+      tags: [Empresas]
+      summary: Listar empresas
+      description: >
+        Devuelve todas las empresas registradas. Permite filtrar por estado (activo/inactivo).
+        La respuesta incluye una vista enriquecida con empleados y novedades asociadas.
+      parameters:
+        - name: activo
+          in: query
+          schema:
+            type: boolean
+          example: true
+      responses:
+        '200':
+          description: Lista de empresas encontradas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EmpresaView'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    post:
+      tags: [Empresas]
+      summary: Crear empresa
+      description: >
+        Registra una nueva empresa en el sistema. El CUIT debe ser único.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmpresaInput'
+            example:
+              nombre: "Orion Software SA"
+              cuit: "30-70123456-7"
+              rubro: "Desarrollo de software"
+              contacto: "contacto@orionsoftware.com"
+      responses:
+        '201':
+          description: Empresa creada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empresa'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /api/empresas/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        example: 1
+
+    get:
+      tags: [Empresas]
+      summary: Obtener empresa por ID
+      description: Devuelve el detalle de una empresa incluyendo sus empleados y novedades.
+      responses:
+        '200':
+          description: Empresa encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmpresaView'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    put:
+      tags: [Empresas]
+      summary: Actualizar empresa
+      description: Modifica los datos de una empresa existente.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmpresaUpdate'
+            example:
+              contacto: "nuevo-contacto@empresa.com"
+      responses:
+        '200':
+          description: Empresa actualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empresa'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    delete:
+      tags: [Empresas]
+      summary: Dar de baja empresa (baja lógica)
+      description: >
+        Marca la empresa como inactiva. No se permite si tiene empleados o novedades activas.
+      responses:
+        '200':
+          description: Empresa dada de baja
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empresa'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+components:
+  schemas:
+    Empresa:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        nombre:
+          type: string
+          example: "Orion Software SA"
+        cuit:
+          type: string
+          example: "30-70123456-7"
+        rubro:
+          type: string
+          example: "Desarrollo de software"
+        contacto:
+          type: string
+          example: "contacto@orionsoftware.com"
+        activo:
+          type: boolean
+          example: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    EmpresaView:
+      allOf:
+        - $ref: '#/components/schemas/Empresa'
+        - type: object
+          properties:
+            empleados:
+              type: array
+              items:
+                type: object
+                properties:
+                  id: { type: integer }
+                  nombre: { type: string }
+                  apellido: { type: string }
+            novedades:
+              type: array
+              items:
+                type: object
+                properties:
+                  id: { type: integer }
+                  tipo: { type: string }
+                  estado: { type: string }
+
+    EmpresaInput:
+      type: object
+      required: [nombre, cuit, rubro, contacto]
+      properties:
+        nombre:
+          type: string
+        cuit:
+          type: string
+        rubro:
+          type: string
+        contacto:
+          type: string
+
+    EmpresaUpdate:
+      type: object
+      minProperties: 1
+      properties:
+        nombre: { type: string }
+        cuit: { type: string }
+        rubro: { type: string }
+        contacto: { type: string }
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: boolean
+          example: true
+        statusCode:
+          type: integer
+          example: 400
+        message:
+          type: string
+          example: "Detalle del error"
+
+  responses:
+    BadRequest:
+      description: Datos inválidos o restricción de negocio
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Recurso no encontrado
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServerError:
+      description: Error interno del servidor
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'

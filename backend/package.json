@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "nodemon ./src/index.js",
     "start": "node ./src/index.js",
-    "test": "node --check ./src/index.js"
+    "test": "node --check ./src/index.js",
+    "docs:bundle": "redocly bundle ../docs/index.yaml -o ../docs/bundle.yaml --force"
   },
   "keywords": [],
   "author": "",
@@ -19,6 +20,7 @@
     "pug": "^3.0.4"
   },
   "devDependencies": {
+    "@redocly/cli": "^2.28.1",
     "nodemon": "^3.1.14"
   }
 }

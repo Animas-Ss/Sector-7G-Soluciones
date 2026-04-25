@@ -138,6 +138,80 @@ El sistema deberá organizarse siguiendo una arquitectura modular, validar datos
 
 ---
 
+## ACUERDO DE EQUIPO - Uso de Ramas en Git
+
+Cómo hacer que el trabajo en equipo sea fluido y sin conflictos con Git:
+
+### ¿Cómo arranco?
+
+Lo primero es traerte los últimos cambios para estar al día:
+
+```bash
+git checkout main
+git pull origin main
+```
+
+Después, creás tu propia rama para trabajar tranquilo:
+
+```bash
+git checkout -b feature/lo-que-voy-a-hacer
+```
+
+### ¿Cómo guardo mi trabajo?
+
+Cada vez que terminás algo (aunque sea pequeño), guardalo con un commit:
+
+```bash
+git add .
+git commit -m "feat: descripción corta de lo que hice"
+```
+
+No hace falta que el mensaje sea perfecto, pero que se entienda qué hiciste 😊
+
+### ¿Cómo subo mis cambios?
+
+Cuando ya terminaste y querés subir tu rama:
+
+```bash
+# Primero, traete los cambios nuevos de main por si alguien avanzó
+git checkout main
+git pull origin main
+git checkout feature/lo-que-voy-a-hacer
+git merge main   # si hay conflictos, se resuelven acá, en tu rama
+# Después subís tu rama
+git push origin feature/lo-que-voy-a-hacer
+```
+
+Y desde ahí abrís un Pull Request para que alguien revise antes de mergear a `main`.
+
+### Nombres de ramas sugeridos
+
+Usar esta nomenclatura ayuda a entender de qué trata cada rama:
+
+| Prefijo | Cuándo usarlo |
+|---------|---------------|
+| `feature/` | Estás agregando algo nuevo |
+| `fix/` | Estás corrigiendo algo que no andaba |
+| `chore/` | Cambios de config, docs, limpieza |
+
+### Mensajes de commit sugeridos
+
+```
+feat:   agregué algo nuevo
+fix:    corregí un error
+chore:  cambios de configuración o dependencias
+docs:   cambios en documentación
+style:  solo cambié formato, nada de lógica
+```
+
+### Consejos para no complicarse
+
+- Hacé `git pull` antes de arrancar cada vez que te sentás a trabajar
+- Tratá de no subir cambios directo a `main`, así todos pueden revisar antes
+- Evitá el `git push --force` a menos que sepas bien lo que estás haciendo, puede pisar el trabajo de otros sin querer
+
+---
+
 ## ACCIONABLES CLAVE POR MÓDULO
 
 - [x] EMPRESA

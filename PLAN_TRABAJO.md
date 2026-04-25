@@ -166,7 +166,7 @@ git add .
 git commit -m "feat: descripción corta de lo que hice"
 ```
 
-No hace falta que el mensaje sea perfecto, pero que se entienda qué hiciste 😊
+No hace falta que el mensaje sea perfecto, pero que se entienda qué hiciste
 
 ### ¿Cómo subo mis cambios?
 

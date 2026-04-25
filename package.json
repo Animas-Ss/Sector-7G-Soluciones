@@ -7,7 +7,7 @@
     "dev": "nodemon ./src/index.js",
     "start": "node ./src/index.js",
     "test": "node --check ./src/index.js",
-    "docs:bundle": "redocly bundle ../docs/index.yaml -o ../docs/bundle.yaml --force"
+    "docs:bundle": "redocly bundle ./docs/index.yaml -o ./docs/bundle.yaml --force"
   },
   "keywords": [],
   "author": "",

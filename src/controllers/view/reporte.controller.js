@@ -1,6 +1,6 @@
-import { listarEmpresas } from "../services/empresa.service.js";
-import { listarEmpleados } from "../services/empleado.service.js";
-import { listarNovedades } from "../services/novedad.service.js";
+import { listarEmpresas } from "../../services/empresa.service.js";
+import { listarEmpleados } from "../../services/empleado.service.js";
+import { listarNovedades } from "../../services/novedad.service.js";
 
 class ReporteController {
   async getResumen(req, res) {

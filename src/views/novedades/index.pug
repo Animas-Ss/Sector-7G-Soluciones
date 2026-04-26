@@ -6,7 +6,7 @@ block content
       div
         h1= titulo
         p Seguimiento de novedades administrativas y legales.
-      a.btn-nuevo(href="/api/novedades/form") + Nueva Novedad
+      a.btn-nuevo(href="/novedades/form") + Nueva Novedad
 
     table.empresas-table
       thead
@@ -27,5 +27,5 @@ block content
             td
               span(class=`badge-${nov.estado === 'Procesada' ? 'activo' : 'inactivo'}`)= nov.estado || 'Pendiente'
             td
-              a.btn-accion(href=`/api/novedades/${nov.id}`) Detalle
-              a.btn-accion(href=`/api/novedades/form/${nov.id}`) Editar
+              a.btn-accion(href=`/novedades/${nov.id}`) Detalle
+              a.btn-accion(href=`/novedades/form/${nov.id}`) Editar

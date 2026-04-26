@@ -1,23 +1,25 @@
 import { Router } from "express";
-import EmpleadoController from "../controllers/empleado.controller.js";
+import EmpleadoController from "../controllers/api/empleado.controller.js";
+import EmpleadoViewController from "../controllers/view/empleado.controller.js";
 import { asyncHandler } from "../libs/asyncHandler.js";
 import { requireBody, requireFields } from "../middlewares/validation.middleware.js";
 
-const router = Router();
+// Vistas
+const viewRouter = Router();
+viewRouter.get("/",         asyncHandler(EmpleadoViewController.getAll));
+viewRouter.get("/form",     asyncHandler(EmpleadoViewController.getForm));
+viewRouter.get("/form/:id", asyncHandler(EmpleadoViewController.getForm));
+viewRouter.get("/:id",      asyncHandler(EmpleadoViewController.getById));
 
-router.route("/")
-  .get(asyncHandler(EmpleadoController.getAll))
-  .post(
-    requireFields(["nombre", "apellido", "dni", "puesto", "email", "empresaId"]),
-    asyncHandler(EmpleadoController.create)
-  );
+// API JSON
+const apiRouter = Router();
+apiRouter.get("/",    asyncHandler(EmpleadoController.list));
+apiRouter.get("/:id", asyncHandler(EmpleadoController.show));
+apiRouter.post("/",
+  requireFields(["nombre", "apellido", "dni", "puesto", "email", "empresaId"]),
+  asyncHandler(EmpleadoController.create)
+);
+apiRouter.put("/:id",    requireBody, asyncHandler(EmpleadoController.update));
+apiRouter.delete("/:id", asyncHandler(EmpleadoController.delete));
 
-router.get("/form", asyncHandler(EmpleadoController.getForm));
-router.get("/form/:id", asyncHandler(EmpleadoController.getForm));
-
-router.route("/:id")
-  .get(asyncHandler(EmpleadoController.getById))
-  .put(requireBody, asyncHandler(EmpleadoController.update))
-  .delete(asyncHandler(EmpleadoController.delete));
-
-export { router };
+export { viewRouter, apiRouter };

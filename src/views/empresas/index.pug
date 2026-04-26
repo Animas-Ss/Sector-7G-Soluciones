@@ -22,7 +22,7 @@ block content
         h1= titulo || 'Directorio de Empresas'
         p Gestioná las empresas clientes registradas en el sistema.
       div
-        a.btn-nuevo(href="/api/empresas/form") + Nueva Empresa
+        a.btn-nuevo(href="/empresas/form") + Nueva Empresa
 
     table.empresas-table
       thead
@@ -47,8 +47,8 @@ block content
                 else
                   span.badge-inactivo Inactivo
               td
-                a.btn-accion(href=`/api/empresas/${emp.id}`) Ver
-                a.btn-accion(href=`/api/empresas/form/${emp.id}`) Editar
+                a.btn-accion(href=`/empresas/${emp.id}`) Ver
+                a.btn-accion(href=`/empresas/form/${emp.id}`) Editar
         else
           tr
             td(colspan="6" style="text-align: center; padding: 30px; color: #6272a4;") No hay empresas registradas actualmente.

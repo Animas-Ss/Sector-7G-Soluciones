@@ -6,7 +6,7 @@ block content
       div
         h1= titulo || 'Listado de Liquidaciones'
         p Historial de haberes liquidados en el sistema.
-      a.btn-nuevo(href="/api/liquidaciones/form") + Nueva Liquidación
+      a.btn-nuevo(href="/liquidaciones/form") + Nueva Liquidación
 
     table.empresas-table
       thead
@@ -29,4 +29,4 @@ block content
             td
               span.badge-activo= liq.estado || 'Procesado'
             td
-              a.btn-accion(href=`/api/liquidaciones/${liq.id}`) Ver Detalle
+              a.btn-accion(href=`/liquidaciones/${liq.id}`) Ver Detalle

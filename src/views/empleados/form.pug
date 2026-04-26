@@ -16,7 +16,7 @@ block content
 
 
   .container 
-    a.btn-volver(href="/api/empleados") Cancelar y volver
+    a.btn-volver(href="/empleados") Cancelar y volver
 
     .card-form
       //- Cambiar el título de acuerdo al empleado
@@ -75,7 +75,7 @@ block content
         });
 
         if (response.ok) {
-          window.location.href = '/api/empleados';
+          window.location.href = '/empleados';
         } else {
           const errorData = await response.json();
           alert('Error: ' + (errorData.message || 'Verificá que los datos sean correctos.'));

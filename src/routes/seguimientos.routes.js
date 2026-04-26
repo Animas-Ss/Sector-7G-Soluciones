@@ -1,21 +1,25 @@
 import { Router } from "express";
-import SeguimientoController from "../controllers/seguimiento.controller.js";
+import SeguimientoController from "../controllers/api/seguimiento.controller.js";
+import SeguimientoViewController from "../controllers/view/seguimiento.controller.js";
 import { asyncHandler } from "../libs/asyncHandler.js";
 import { requireBody, requireFields } from "../middlewares/validation.middleware.js";
 
-const router = Router();
+// Vistas
+const viewRouter = Router();
+viewRouter.get("/",         asyncHandler(SeguimientoViewController.getAll));
+viewRouter.get("/form",     asyncHandler(SeguimientoViewController.getForm));
+viewRouter.get("/form/:id", asyncHandler(SeguimientoViewController.getForm));
+viewRouter.get("/:id",      asyncHandler(SeguimientoViewController.getById));
 
-router.get("/", asyncHandler(SeguimientoController.getAll));
-router.get("/form", asyncHandler(SeguimientoController.getForm));
-router.get("/form/:id", asyncHandler(SeguimientoController.getForm));
-router.route("/:id")
-  .get(asyncHandler(SeguimientoController.getById))
-  .put(requireBody, asyncHandler(SeguimientoController.update))
-  .delete(asyncHandler(SeguimientoController.delete));
-
-router.post("/",
+// API JSON
+const apiRouter = Router();
+apiRouter.get("/",    asyncHandler(SeguimientoController.list));
+apiRouter.get("/:id", asyncHandler(SeguimientoController.show));
+apiRouter.post("/",
   requireFields(["novedadId", "fecha", "responsable", "comentario"]),
   asyncHandler(SeguimientoController.create)
 );
+apiRouter.put("/:id",    requireBody, asyncHandler(SeguimientoController.update));
+apiRouter.delete("/:id", asyncHandler(SeguimientoController.delete));
 
-export { router };
+export { viewRouter, apiRouter };

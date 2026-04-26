@@ -1,21 +1,25 @@
 import { Router } from "express";
-import SocioController from "../controllers/socio.controller.js";
+import SocioController from "../controllers/api/socio.controller.js";
+import SocioViewController from "../controllers/view/socio.controller.js";
 import { asyncHandler } from "../libs/asyncHandler.js";
 import { requireBody, requireFields } from "../middlewares/validation.middleware.js";
 
-const router = Router();
+// Vistas
+const viewRouter = Router();
+viewRouter.get("/",         asyncHandler(SocioViewController.getAll));
+viewRouter.get("/form",     asyncHandler(SocioViewController.getForm));
+viewRouter.get("/form/:id", asyncHandler(SocioViewController.getForm));
+viewRouter.get("/:id",      asyncHandler(SocioViewController.getById));
 
-router.get("/", asyncHandler(SocioController.getAll.bind(SocioController)));
-router.get("/form", asyncHandler(SocioController.getForm.bind(SocioController)));
-router.get("/form/:id", asyncHandler(SocioController.getForm.bind(SocioController)));
-router.get("/:id", asyncHandler(SocioController.getById.bind(SocioController)));
-
-router.post("/",
+// API JSON
+const apiRouter = Router();
+apiRouter.get("/",    asyncHandler(SocioController.list));
+apiRouter.get("/:id", asyncHandler(SocioController.show));
+apiRouter.post("/",
   requireFields(["nombre", "apellido", "dni", "email", "participacion", "fechaIngreso"]),
-  asyncHandler(SocioController.create.bind(SocioController))
+  asyncHandler(SocioController.create)
 );
+apiRouter.put("/:id",    requireBody, asyncHandler(SocioController.update));
+apiRouter.delete("/:id", asyncHandler(SocioController.delete));
 
-router.put("/:id", requireBody, asyncHandler(SocioController.update.bind(SocioController)));
-router.delete("/:id", asyncHandler(SocioController.delete.bind(SocioController)));
-
-export { router };
+export { viewRouter, apiRouter };

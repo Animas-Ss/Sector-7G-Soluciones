@@ -25,53 +25,52 @@ block content
   .container
     .header-flex
       div
-        h1= titulo || 'Nómina de Empleados'
-        p Gestioná el personal registrado
+        h1= titulo || 'Directorio de Socios'
+        p Gestion de socios
       div
-        a.btn-nuevo(href="/api/empleados/form") Nuevo Empleado
+        a.btn-nuevo(href="/api/socio/form") Nuevo Socio
 
     table.data-table
       thead
         tr
-          th Nombre Completo
-          th DNI
-          th Empresa ID
+          th Nombre / Razón Social
+          th CUIT / DNI
+          th Correo Electrónico
           th Estado
           th Acciones
       tbody
-        if empleados && empleados.length > 0
-          each emp in empleados
+        if socios && socios.length > 0
+          each socio in socios
             tr
-              td= `${emp.nombre} ${emp.apellido}`
-              td= emp.dni
-              td= emp.empresaId
+              td= socio.apellido ? `${socio.nombre} ${socio.apellido}` : socio.nombre
+              td= socio.cuit || socio.dni || 'Sin registro'
+              td= socio.email || 'Sin registro'
               td
-                if emp.activo
+                if socio.activo
                   span.badge-activo Activo
                 else
                   span.badge-inactivo Inactivo
               td
-                a.btn-accion(href=`/api/empleados/${emp.id}`) Ver
-                a.btn-accion.btn-editar(href=`/api/empleados/form/${emp.id}`) Editar
-                if emp.activo
-                  button.btn-accion.btn-baja(onclick=`darDeBaja(${emp.id})`) Dar de Baja
+                a.btn-accion(href=`/api/socio/${socio.id}`) Ver
+                a.btn-accion.btn-editar(href=`/api/socio/form/${socio.id}`) Editar
+                if socio.activo
+                  button.btn-accion.btn-baja(onclick=`darDeBaja(${socio.id})`) Dar de Baja
         else
           tr
-            td(colspan="5" style="text-align: center; padding: 30px; color: #6272a4;") No hay empleados registrados en el sistema.
+            td(colspan="5" style="text-align: center; padding: 30px; color: #6272a4;") No hay socios registrados en el sistema.
 
   script.
     async function darDeBaja(id) {
-      if (!confirm('¿Dar de baja a este empleado?')) return;
+      if (!confirm('¿Dar de baja a este socio?')) return;
       
       try {
-        const response = await fetch(`/api/empleados/${id}`, { method: 'DELETE' });
+        const response = await fetch(`/api/socio/${id}`, { method: 'DELETE' });
         
         if (response.ok) {
-          // Recarga la página con estado actualizado
           window.location.reload(); 
         } else {
           const errorData = await response.json();
-          alert('No se pudo realizar la acción: ' + (errorData.message || 'Verificá el estado del empleado.'));
+          alert('No se pudo realizar la acción: ' + (errorData.message || 'Verificá el estado del socio.'));
         }
       } catch (error) {
         console.error(error);

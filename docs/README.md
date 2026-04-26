@@ -59,7 +59,6 @@ Eso genera `docs/bundle.yaml`. Luego importar **ese archivo** en Postman o Thund
 Asegurarse de tener el servidor corriendo antes de probar:
 
 ```bash
-cd backend
 npm install
 npm start
 ```

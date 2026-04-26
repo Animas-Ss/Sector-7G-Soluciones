@@ -10,19 +10,19 @@ class SocioController {
   async getAll(req, res) {
     const socios = await listarSocios(req.query);
     res.render('socios/index', {
-      titulo: 'Listado de Socios',
+      titulo: 'Directorio de Socios',
       socios
     });
   }
 
   async getForm(req, res) {
     const { id } = req.params;
-    let socio = null;
-    if (id) socio = await obtenerSocio(id);
-    res.render('socios/form', {
-      titulo: id ? 'Editar Socio' : 'Nuevo Socio',
-      socio
-    });
+    if (id) {
+      const socio = await obtenerSocio(id);
+      res.render('socios/form', { titulo: 'Editar Socio', socio });
+    } else {
+      res.render('socios/form', { titulo: 'Nuevo Socio', socio: null });
+    }
   }
 
   async getById(req, res) {

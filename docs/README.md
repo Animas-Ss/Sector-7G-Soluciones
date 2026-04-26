@@ -17,7 +17,6 @@ Cada módulo tiene su propio archivo. Para agregar la documentación de un nuevo
 Se puede generar un único archivo `bundle.yaml` que consolida todos los módulos:
 
 ```bash
-# Desde la carpeta backend/
 npm run docs:bundle
 ```
 
@@ -60,7 +59,6 @@ Eso genera `docs/bundle.yaml`. Luego importar **ese archivo** en Postman o Thund
 Asegurarse de tener el servidor corriendo antes de probar:
 
 ```bash
-cd backend
 npm install
 npm start
 ```

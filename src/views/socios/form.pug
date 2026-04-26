@@ -1,43 +1,89 @@
 extends ../layout
 
 block content
+  style.
+    .container { width: 100%; max-width: 800px; margin: 0 auto; }
+    .card { background-color: #2a2a40; border-radius: 10px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+    h1 { color: #50fa7b; margin-top: 0; margin-bottom: 30px; border-bottom: 1px solid #44475a; padding-bottom: 15px; }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; color: #8be9fd; margin-bottom: 8px; font-weight: bold; font-size: 14px; }
+    .form-control { width: 100%; padding: 12px; border-radius: 6px; border: 1px solid #44475a; background-color: #1e1e2f; color: #f8f8f2; box-sizing: border-box; }
+    .form-control:focus { outline: none; border-color: #bd93f9; }
+    .btn-guardar { background-color: #50fa7b; color: #282a36; padding: 12px 25px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 16px; margin-right: 10px; }
+    .btn-guardar:hover { background-color: #40c863; }
+    .btn-cancelar { background-color: #44475a; color: #f8f8f2; padding: 12px 25px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; }
+    .btn-cancelar:hover { background-color: #6272a4; }
+    .form-row { display: flex; gap: 20px; }
+    .form-row .form-group { flex: 1; }
+
   .container
-    h1= titulo
-    form(id="socioForm" style="max-width: 600px; background: #2a2a40; padding: 30px; border-radius: 12px;")
-      input(type="hidden" name="id" value=socio ? socio.id : "")
+    .card
+      h1= titulo
       
-      .form-group(style="margin-bottom: 15px;")
-        label Nombre:
-        input(type="text" name="nombre" value=socio ? socio.nombre : "" required style="width: 100%; padding: 10px; border-radius: 6px; background: #44475a; color: white;")
+      form#socioForm
+        if socio
+          input(type="hidden" id="socioId" value=socio.id)
+          
+        .form-row
+          .form-group
+            label(for="nombre") Nombre / Razón Social *
+            input.form-control(type="text" id="nombre" name="nombre" value=socio ? socio.nombre : '' required)
+          .form-group
+            label(for="apellido") Apellido
+            input.form-control(type="text" id="apellido" name="apellido" value=socio ? socio.apellido : '')
+            
+        .form-row
+          .form-group
+            label(for="dni") DNI / CUIT *
+            input.form-control(type="text" id="dni" name="dni" value=socio ? socio.dni : '' required)
+          .form-group
+            label(for="email") Correo Electrónico *
+            input.form-control(type="email" id="email" name="email" value=socio ? socio.email : '' required)
+            
+        .form-row
+          .form-group
+            label(for="participacion") Participación (%) *
+            input.form-control(type="number" step="0.01" id="participacion" name="participacion" value=socio ? socio.participacion : '' required)
+          .form-group
+            label(for="fechaIngreso") Fecha de Ingreso *
+            input.form-control(type="date" id="fechaIngreso" name="fechaIngreso" value=socio ? socio.fechaIngreso : '' required)
 
-      .form-group(style="margin-bottom: 15px;")
-        label Apellido:
-        input(type="text" name="apellido" value=socio ? socio.apellido : "" required style="width: 100%; padding: 10px; border-radius: 6px; background: #44475a; color: white;")
-
-      .form-group(style="margin-bottom: 15px;")
-        label DNI:
-        input(type="number" name="dni" value=socio ? socio.dni : "" required style="width: 100%; padding: 10px; border-radius: 6px; background: #44475a; color: white;")
-
-      .form-group(style="margin-bottom: 15px;")
-        label % Participación:
-        input(type="number" name="participacion" value=socio ? socio.participacion : "" min="1" max="100" required style="width: 100%; padding: 10px; border-radius: 6px; background: #44475a; color: white;")
-
-      .form-group(style="margin-bottom: 20px;")
-        label Fecha Ingreso:
-        input(type="date" name="fechaIngreso" value=socio ? socio.fechaIngreso : "" required style="width: 100%; padding: 10px; border-radius: 6px; background: #44475a; color: white;")
-
-      button.btn-nuevo(type="submit" style="width: 100%; border: none;")= socio ? 'Actualizar Socio' : 'Crear Socio'
+        div(style="margin-top: 30px;")
+          button.btn-guardar(type="submit") Guardar Socio
+          a.btn-cancelar(href="/api/socios") Cancelar
 
   script.
     document.getElementById('socioForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const formData = Object.fromEntries(new FormData(e.target));
-      const method = formData.id ? 'PUT' : 'POST';
-      const url = formData.id ? `/api/socio/${formData.id}` : '/api/socio';
-      const res = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
-      if (res.ok) { window.location.href = '/api/socio'; }
+      
+      const id = document.getElementById('socioId')?.value;
+      const data = {
+        nombre: document.getElementById('nombre').value,
+        apellido: document.getElementById('apellido').value,
+        dni: document.getElementById('dni').value,
+        email: document.getElementById('email').value,
+        participacion: Number(document.getElementById('participacion').value),
+        fechaIngreso: document.getElementById('fechaIngreso').value,
+        activo: true
+      };
+      
+      const url = id ? `/api/socios/${id}` : '/api/socios';
+      const method = id ? 'PUT' : 'POST';
+      
+      try {
+        const response = await fetch(url, {
+          method: method,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        
+        if (response.ok) {
+          window.location.href = '/api/socios';
+        } else {
+          const err = await response.json();
+          alert('Error de validación: ' + (err.message || 'Revisá los campos'));
+        }
+      } catch (error) {
+        alert('Error de conexión.');
+      }
     });

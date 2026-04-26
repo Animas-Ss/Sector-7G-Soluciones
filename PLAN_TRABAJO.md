@@ -119,8 +119,6 @@ El sistema deberá organizarse siguiendo una arquitectura modular, validar datos
 
 - [x] QA: Probar todos los endpoints y vistas con casos válidos e inválidos (Happy/Sad Path)
 - [x] QA: Verificar validaciones cruzadas (Empresa → Empleado → Novedad → Seguimiento)
-- [x] Integración: Resolución de conflictos de Git y unificación de ramas en `main`
-- [x] Verificar que el servidor levanta correctamente con `npm start` tras la integración
 - [x] **Documentación OpenAPI:** Generación de archivos YAML para todos los módulos (Empresas, Empleados, Novedades, Seguimientos, Reportes)
 - [x] **Documentación OpenAPI:** Consolidación en `index.yaml` y esquema de errores estandarizado
 - [x] **Coordinación de Entrega:** Creación de guion detallado por clips para la grabación del video

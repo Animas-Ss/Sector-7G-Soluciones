@@ -1,0 +1,201 @@
+openapi: 3.0.3
+info:
+  title: Talento Evolutivo S.A. - Módulo Empleados
+  description: >
+    Endpoints para la gestión de empleados de las empresas clientes.
+    Cada empleado debe pertenecer a una empresa activa existente.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000
+    description: Servidor local de desarrollo
+
+tags:
+  - name: Empleados
+    description: CRUD de empleados
+
+paths:
+  /api/empleados:
+    get:
+      tags: [Empleados]
+      summary: Listar empleados
+      description: >
+        Devuelve la lista de empleados. Permite filtrar por empresa y por estado.
+      parameters:
+        - name: empresaId
+          in: query
+          schema:
+            type: integer
+          example: 1
+        - name: activo
+          in: query
+          schema:
+            type: boolean
+          example: true
+      responses:
+        '200':
+          description: Lista de empleados
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Empleado'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    post:
+      tags: [Empleados]
+      summary: Crear empleado
+      description: >
+        Registra un nuevo empleado. La empresa indicada debe existir y estar activa.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmpleadoInput'
+            example:
+              nombre: "Juan"
+              apellido: "Perez"
+              dni: "40111222"
+              puesto: "Dev"
+              email: "juan@empresa.com"
+              empresaId: 1
+      responses:
+        '201':
+          description: Empleado creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empleado'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /api/empleados/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        example: 1
+
+    get:
+      tags: [Empleados]
+      summary: Obtener detalle de empleado
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empleado'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    put:
+      tags: [Empleados]
+      summary: Actualizar empleado
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmpleadoUpdate'
+            example:
+              puesto: "Senior Developer"
+      responses:
+        '200':
+          description: Actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empleado'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    delete:
+      tags: [Empleados]
+      summary: Dar de baja empleado (baja lógica)
+      description: >
+        Marca al empleado como inactivo. No se permite si tiene novedades activas asociadas.
+      responses:
+        '200':
+          description: Baja exitosa
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+components:
+  schemas:
+    Empleado:
+      type: object
+      properties:
+        id: { type: integer, example: 1 }
+        nombre: { type: string, example: "Juan" }
+        apellido: { type: string, example: "Perez" }
+        dni: { type: string, example: "40111222" }
+        puesto: { type: string, example: "Dev" }
+        email: { type: string, example: "juan@empresa.com" }
+        empresaId: { type: integer, example: 1 }
+        activo: { type: boolean, example: true }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    EmpleadoInput:
+      type: object
+      required: [nombre, apellido, dni, puesto, email, empresaId]
+      properties:
+        nombre: { type: string }
+        apellido: { type: string }
+        dni: { type: string }
+        puesto: { type: string }
+        email: { type: string }
+        empresaId: { type: integer }
+
+    EmpleadoUpdate:
+      type: object
+      minProperties: 1
+      properties:
+        nombre: { type: string }
+        apellido: { type: string }
+        dni: { type: string }
+        puesto: { type: string }
+        email: { type: string }
+        empresaId: { type: integer }
+
+    Error:
+      type: object
+      properties:
+        error: { type: boolean, example: true }
+        statusCode: { type: integer, example: 400 }
+        message: { type: string, example: "Error message" }
+
+  responses:
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    ServerError:
+      description: Server Error
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }

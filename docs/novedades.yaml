@@ -1,0 +1,186 @@
+openapi: 3.0.3
+info:
+  title: Talento Evolutivo S.A. - Módulo Novedades
+  description: >
+    Endpoints para la gestión de novedades laborales (licencias, ausencias, etc.).
+    Incluye validación cruzada para asegurar que el empleado pertenezca a la empresa.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000
+    description: Servidor local de desarrollo
+
+tags:
+  - name: Novedades
+    description: Gestión de novedades laborales
+
+paths:
+  /api/novedades:
+    get:
+      tags: [Novedades]
+      summary: Listar novedades
+      description: Devuelve la lista de novedades con información enriquecida de empresa, empleado y seguimientos.
+      parameters:
+        - name: empresaId
+          in: query
+          schema: { type: integer }
+        - name: estado
+          in: query
+          schema: { type: string, enum: [pendiente, procesada, rechazada] }
+        - name: activo
+          in: query
+          schema: { type: boolean }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NovedadView'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    post:
+      tags: [Novedades]
+      summary: Crear novedad
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NovedadInput'
+            example:
+              tipo: "Licencia"
+              descripcion: "Licencia por estudio"
+              fecha: "2026-04-15"
+              empresaId: 1
+              empleadoId: 1
+      responses:
+        '201':
+          description: Creada
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /api/novedades/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema: { type: integer }
+    get:
+      tags: [Novedades]
+      summary: Obtener detalle de novedad
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NovedadView'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    put:
+      tags: [Novedades]
+      summary: Actualizar novedad
+      description: >
+        Permite modificar campos. Si se cambia el estado, se registra auditoría.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NovedadUpdate'
+            example:
+              estado: "procesada"
+      responses:
+        '200':
+          description: Actualizada
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      tags: [Novedades]
+      summary: Dar de baja novedad (baja lógica)
+      responses:
+        '200':
+          description: Baja exitosa
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+components:
+  schemas:
+    Novedad:
+      type: object
+      properties:
+        id: { type: integer }
+        tipo: { type: string }
+        descripcion: { type: string }
+        fecha: { type: string, format: date }
+        estado: { type: string, enum: [pendiente, procesada, rechazada] }
+        empresaId: { type: integer }
+        empleadoId: { type: integer }
+        activo: { type: boolean }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    NovedadView:
+      allOf:
+        - $ref: '#/components/schemas/Novedad'
+        - type: object
+          properties:
+            empresa: { type: object }
+            empleado: { type: object }
+            seguimientos: { type: array, items: { type: object } }
+
+    NovedadInput:
+      type: object
+      required: [tipo, descripcion, fecha, empresaId, empleadoId]
+      properties:
+        tipo: { type: string }
+        descripcion: { type: string }
+        fecha: { type: string, format: date }
+        empresaId: { type: integer }
+        empleadoId: { type: integer }
+        estado: { type: string, enum: [pendiente, procesada, rechazada] }
+
+    NovedadUpdate:
+      type: object
+      minProperties: 1
+      properties:
+        tipo: { type: string }
+        descripcion: { type: string }
+        fecha: { type: string, format: date }
+        estado: { type: string, enum: [pendiente, procesada, rechazada] }
+        empresaId: { type: integer }
+        empleadoId: { type: integer }
+
+    Error:
+      type: object
+      properties:
+        error: { type: boolean, example: true }
+        statusCode: { type: integer, example: 400 }
+        message: { type: string, example: "Error detail" }
+
+  responses:
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    ServerError:
+      description: Server Error
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }

@@ -1,0 +1,24 @@
+extends ../layout
+
+block content
+  .container
+    h1= titulo
+    p(style="margin-bottom: 20px;") Registro histórico de todas las operaciones realizadas en el sistema.
+
+    table.empresas-table
+      thead
+        tr
+          th Fecha/Hora
+          th Operación
+          th Entidad
+          th ID Ref.
+          th Detalles
+      tbody
+        each log in logs
+          tr
+            td(style="font-family: monospace; font-size: 12px;")= log.timestamp
+            td
+              span(style=`color: ${log.operacion === 'BAJA' ? '#ff5555' : '#50fa7b'}`)= log.operacion
+            td= log.entidad
+            td= log.entidadId
+            td(style="font-size: 11px;")= JSON.stringify(log.detalles)

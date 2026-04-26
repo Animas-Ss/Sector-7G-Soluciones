@@ -105,13 +105,13 @@ El sistema deberá organizarse siguiendo una arquitectura modular, validar datos
 - [x] Vista inicio (`views/index.pug`): bienvenida con links a cada sección
 - [x] Vistas de Empresas: `views/empresas/index.pug`, `detalle.pug`, `form.pug`
 - [x] Vistas de Empleados: `views/empleados/index.pug`, `detalle.pug`, `form.pug`
-- [ ] Vistas de Novedades: `views/novedades/index.pug` (con filtros), `detalle.pug` (con seguimientos), `form.pug`
-- [ ] Vistas de Seguimiento: `views/seguimiento/index.pug`, `form.pug`
-- [ ] Vistas de Liquidaciones: `views/liquidaciones/index.pug`, `detalle.pug`, `form.pug`
-- [ ] Vistas de Socios: `views/socios/index.pug`, `detalle.pug`, `form.pug`
-- [ ] Vista de Auditoría: `views/auditoria/index.pug` (con filtros)
-- [ ] Vista de Reporte/Resumen: `views/reporte/resumen.pug` (indicadores y tabla de impacto)
-- [ ] Actualizar todos los controllers para renderizar vistas Pug en lugar de responder JSON
+- [x] Vistas de Novedades: `views/novedades/index.pug` (con filtros), `detalle.pug` (con seguimientos), `form.pug`
+- [x] Vistas de Seguimiento: `views/seguimiento/index.pug`, `form.pug`
+- [x] Vistas de Liquidaciones: `views/liquidaciones/index.pug`, `detalle.pug`, `form.pug`
+- [x] Vistas de Socios: `views/socios/index.pug`, `detalle.pug`, `form.pug`
+- [x] Vista de Auditoría: `views/auditoria/index.pug` (con filtros)
+- [x] Vista de Reporte/Resumen: `views/reporte/resumen.pug` (indicadores y tabla de impacto)
+- [x] Actualizar todos los controllers para renderizar vistas Pug en lugar de responder JSON
 
 ---
 
@@ -226,7 +226,7 @@ style:  solo cambié formato, nada de lógica
 - [x] REPORTE
 - [x] LIQUIDACIÓN
 - [x] SOCIOS
-- [ ] QA/VALIDACIÓN
+- [x] QA/VALIDACIÓN
 
 ---
 

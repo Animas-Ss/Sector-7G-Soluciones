@@ -1,0 +1,32 @@
+extends ../layout
+
+block content
+  .container
+    .header-flex
+      div
+        h1= titulo || 'Listado de Liquidaciones'
+        p Historial de haberes liquidados en el sistema.
+      a.btn-nuevo(href="/api/liquidaciones/form") + Nueva Liquidación
+
+    table.empresas-table
+      thead
+        tr
+          th ID
+          th Empleado
+          th Empresa
+          th Período
+          th Monto
+          th Estado
+          th Acciones
+      tbody
+        each liq in liquidaciones
+          tr
+            td= liq.id
+            td= liq.empleadoId
+            td= liq.empresaId
+            td= liq.periodo
+            td $ #{liq.monto}
+            td
+              span.badge-activo= liq.estado || 'Procesado'
+            td
+              a.btn-accion(href=`/api/liquidaciones/${liq.id}`) Ver Detalle

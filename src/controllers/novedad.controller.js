@@ -5,6 +5,8 @@ import {
   listarNovedades,
   obtenerNovedad,
 } from "../services/novedad.service.js";
+import { listarEmpresas } from "../services/empresa.service.js";
+import { listarEmpleados } from "../services/empleado.service.js";
 
 class NovedadController {
   async getAll(req, res) {
@@ -17,12 +19,16 @@ class NovedadController {
 
   async getForm(req, res) {
     const { id } = req.params;
+    const empresas = await listarEmpresas({});
+    const empleados = await listarEmpleados({});
     let novedad = null;
     if (id) novedad = await obtenerNovedad(id);
 
     res.render('novedades/form', {
       titulo: id ? 'Editar Novedad' : 'Nueva Novedad',
-      novedad
+      novedad,
+      empresas,
+      empleados
     });
   }
 

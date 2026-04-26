@@ -5,6 +5,8 @@ import {
   listarLiquidaciones,
   obtenerLiquidacion,
 } from "../services/liquidacion.service.js";
+import { listarEmpresas } from "../services/empresa.service.js";
+import { listarEmpleados } from "../services/empleado.service.js";
 
 class LiquidacionController {
   async getAll(req, res) {
@@ -17,11 +19,15 @@ class LiquidacionController {
 
   async getForm(req, res) {
     const { id } = req.params;
+    const empresas = await listarEmpresas({});
+    const empleados = await listarEmpleados({});
     let liquidacion = null;
     if (id) liquidacion = await obtenerLiquidacion(id);
     res.render('liquidaciones/form', {
       titulo: id ? 'Editar Liquidación' : 'Nueva Liquidación',
-      liquidacion
+      liquidacion,
+      empresas,
+      empleados
     });
   }
 

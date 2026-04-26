@@ -1,0 +1,50 @@
+extends ../layout
+
+block content
+  .container
+    h1= titulo
+    form(id="novedadForm" style="max-width: 600px; background: #2a2a40; padding: 30px; border-radius: 12px;")
+      input(type="hidden" name="id" value=novedad ? novedad.id : "")
+      
+      .form-group(style="margin-bottom: 15px;")
+        label Tipo de Novedad:
+        select(name="tipo" required style="width: 100%; padding: 10px; border-radius: 6px; background: #44475a; color: white;")
+          option(value="Licencia Medica" selected=(novedad && novedad.tipo == 'Licencia Medica')) Licencia Médica
+          option(value="Accidente Trabajo" selected=(novedad && novedad.tipo == 'Accidente Trabajo')) Accidente de Trabajo
+          option(value="Sancion" selected=(novedad && novedad.tipo == 'Sancion')) Sanción Disciplinaria
+
+      .form-group(style="margin-bottom: 15px;")
+        label Empresa:
+        select(name="empresaId" required style="width: 100%; padding: 10px; border-radius: 6px; background: #44475a; color: white;")
+          each emp in empresas
+            option(value=emp.id selected=(novedad && novedad.empresaId == emp.id))= emp.nombre
+
+      .form-group(style="margin-bottom: 15px;")
+        label Empleado:
+        select(name="empleadoId" required style="width: 100%; padding: 10px; border-radius: 6px; background: #44475a; color: white;")
+          each emp in empleados
+            option(value=emp.id selected=(novedad && novedad.empleadoId == emp.id))= `${emp.nombre} ${emp.apellido}`
+
+      .form-group(style="margin-bottom: 15px;")
+        label Fecha (YYYY-MM-DD):
+        input(type="date" name="fecha" value=novedad ? novedad.fecha : "" required style="width: 100%; padding: 10px; border-radius: 6px; background: #44475a; color: white;")
+
+      .form-group(style="margin-bottom: 20px;")
+        label Descripción:
+        textarea(name="descripcion" required style="width: 100%; padding: 10px; border-radius: 6px; background: #44475a; color: white; height: 100px;")= novedad ? novedad.descripcion : ""
+
+      button.btn-nuevo(type="submit" style="width: 100%; border: none;")= novedad ? 'Guardar Cambios' : 'Crear Novedad'
+
+  script.
+    document.getElementById('novedadForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = Object.fromEntries(new FormData(e.target));
+      const method = formData.id ? 'PUT' : 'POST';
+      const url = formData.id ? `/api/novedades/${formData.id}` : '/api/novedades';
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+      if (res.ok) { window.location.href = '/api/novedades'; }
+    });

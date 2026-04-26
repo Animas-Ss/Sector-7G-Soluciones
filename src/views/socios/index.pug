@@ -1,0 +1,27 @@
+extends ../layout
+
+block content
+  .container
+    .header-flex
+      div
+        h1= titulo
+        p Listado de socios accionistas y su participación.
+      a.btn-nuevo(href="/api/socio/form") + Nuevo Socio
+
+    table.empresas-table
+      thead
+        tr
+          th ID
+          th Nombre Completo
+          th DNI
+          th Participación
+          th Acciones
+      tbody
+        each socio in socios
+          tr
+            td= socio.id
+            td= `${socio.nombre} ${socio.apellido}`
+            td= socio.dni
+            td #{socio.participacion}%
+            td
+              a.btn-accion(href=`/api/socio/form/${socio.id}`) Editar

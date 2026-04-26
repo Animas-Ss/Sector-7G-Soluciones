@@ -1,0 +1,57 @@
+extends ../layout
+
+block content
+  .container
+    h1= titulo
+    form(id="liquidacionForm" style="max-width: 600px; background: #2a2a40; padding: 30px; border-radius: 12px;")
+      input(type="hidden" name="id" value=liquidacion ? liquidacion.id : "")
+      
+      .form-group(style="margin-bottom: 20px;")
+        label(style="display: block; margin-bottom: 8px;") Empresa:
+        select(name="empresaId" required style="width: 100%; padding: 10px; border-radius: 6px; background: #44475a; color: white; border: none;")
+          option(value="") Seleccione una empresa...
+          each emp in empresas
+            option(value=emp.id selected=(liquidacion && liquidacion.empresaId == emp.id))= emp.nombre
+
+      .form-group(style="margin-bottom: 20px;")
+        label(style="display: block; margin-bottom: 8px;") Empleado:
+        select(name="empleadoId" required style="width: 100%; padding: 10px; border-radius: 6px; background: #44475a; color: white; border: none;")
+          option(value="") Seleccione un empleado...
+          each emp in empleados
+            option(value=emp.id selected=(liquidacion && liquidacion.empleadoId == emp.id))= `${emp.nombre} ${emp.apellido}`
+
+      .form-group(style="margin-bottom: 20px;")
+        label(style="display: block; margin-bottom: 8px;") Período (MM/YYYY):
+        input(type="text" name="periodo" value=liquidacion ? liquidacion.periodo : "" placeholder="Ej: 04/2024" required style="width: 100%; padding: 10px; border-radius: 6px; background: #44475a; color: white; border: none;")
+
+      .form-group(style="margin-bottom: 20px;")
+        label(style="display: block; margin-bottom: 8px;") Concepto:
+        input(type="text" name="concepto" value=liquidacion ? liquidacion.concepto : "" placeholder="Ej: Haberes Mensuales" required style="width: 100%; padding: 10px; border-radius: 6px; background: #44475a; color: white; border: none;")
+
+      .form-group(style="margin-bottom: 20px;")
+        label(style="display: block; margin-bottom: 8px;") Monto:
+        input(type="number" name="monto" value=liquidacion ? liquidacion.monto : "" step="0.01" required style="width: 100%; padding: 10px; border-radius: 6px; background: #44475a; color: white; border: none;")
+
+      button.btn-nuevo(type="submit" style="width: 100%; border: none; cursor: pointer;")= liquidacion ? 'Actualizar Liquidación' : 'Generar Liquidación'
+
+  script.
+    document.getElementById('liquidacionForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = Object.fromEntries(new FormData(e.target));
+      const id = formData.id;
+      const method = id ? 'PUT' : 'POST';
+      const url = id ? `/api/liquidaciones/${id}` : '/api/liquidaciones';
+
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+
+      if (res.ok) {
+        alert('Operación exitosa');
+        window.location.href = '/api/liquidaciones';
+      } else {
+        alert('Error al procesar la liquidación');
+      }
+    });

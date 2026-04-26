@@ -1,0 +1,43 @@
+extends ../layout
+
+block content
+  .container
+    h1= titulo
+    form(id="socioForm" style="max-width: 600px; background: #2a2a40; padding: 30px; border-radius: 12px;")
+      input(type="hidden" name="id" value=socio ? socio.id : "")
+      
+      .form-group(style="margin-bottom: 15px;")
+        label Nombre:
+        input(type="text" name="nombre" value=socio ? socio.nombre : "" required style="width: 100%; padding: 10px; border-radius: 6px; background: #44475a; color: white;")
+
+      .form-group(style="margin-bottom: 15px;")
+        label Apellido:
+        input(type="text" name="apellido" value=socio ? socio.apellido : "" required style="width: 100%; padding: 10px; border-radius: 6px; background: #44475a; color: white;")
+
+      .form-group(style="margin-bottom: 15px;")
+        label DNI:
+        input(type="number" name="dni" value=socio ? socio.dni : "" required style="width: 100%; padding: 10px; border-radius: 6px; background: #44475a; color: white;")
+
+      .form-group(style="margin-bottom: 15px;")
+        label % Participación:
+        input(type="number" name="participacion" value=socio ? socio.participacion : "" min="1" max="100" required style="width: 100%; padding: 10px; border-radius: 6px; background: #44475a; color: white;")
+
+      .form-group(style="margin-bottom: 20px;")
+        label Fecha Ingreso:
+        input(type="date" name="fechaIngreso" value=socio ? socio.fechaIngreso : "" required style="width: 100%; padding: 10px; border-radius: 6px; background: #44475a; color: white;")
+
+      button.btn-nuevo(type="submit" style="width: 100%; border: none;")= socio ? 'Actualizar Socio' : 'Crear Socio'
+
+  script.
+    document.getElementById('socioForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = Object.fromEntries(new FormData(e.target));
+      const method = formData.id ? 'PUT' : 'POST';
+      const url = formData.id ? `/api/socio/${formData.id}` : '/api/socio';
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+      if (res.ok) { window.location.href = '/api/socio'; }
+    });

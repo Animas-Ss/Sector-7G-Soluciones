@@ -5,6 +5,7 @@ import {
   listarSeguimientos,
   obtenerSeguimiento,
 } from "../services/seguimiento.service.js";
+import { listarNovedades } from "../services/novedad.service.js";
 
 class SeguimientoController {
   async getAll(req, res) {
@@ -17,12 +18,14 @@ class SeguimientoController {
 
   async getForm(req, res) {
     const { id } = req.params;
+    const novedades = await listarNovedades({});
+
     let seguimiento = null;
     if (id) seguimiento = await obtenerSeguimiento(id);
-
     res.render('seguimientos/form', {
       titulo: id ? 'Editar Seguimiento' : 'Nuevo Seguimiento',
-      seguimiento
+      seguimiento,
+      novedades
     });
   }
 

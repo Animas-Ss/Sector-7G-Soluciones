@@ -115,12 +115,11 @@ El sistema deberá organizarse siguiendo una arquitectura modular, validar datos
 
 ---
 
-### **Guillermo Aybar** (``):
+### **Guillermo Aybar** (`GuilleGearts`):
 
-- [ ] QA: probar todos los endpoints y vistas con casos válidos e inválidos
-- [ ] QA: verificar validaciones cruzadas entre módulos (empresa→empleado→novedad→seguimiento)
-- [ ] Verificar que el servidor levanta correctamente con `npm start` tras el merge
-- [ ] Coordinar y grabar el video grupal de 10 minutos
+- [x] QA: probar todos los endpoints y vistas con casos válidos e inválidos
+- [x] QA: verificar validaciones cruzadas entre módulos (empresa→empleado→novedad→seguimiento)
+- [x] Coordinar y grabar el video grupal de 10 minutos
 
 ---
 

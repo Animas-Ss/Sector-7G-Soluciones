@@ -22,5 +22,13 @@
     "descripcion": "Se creo la empresa Axion Software SA.",
     "timestamp": "2026-04-15T16:27:47.571Z",
     "id": 3
+  },
+  {
+    "entidad": "novedad",
+    "entidadId": 4,
+    "accion": "creacion",
+    "descripcion": "Se creo la novedad Accidente Trabajo para el empleado 2.",
+    "timestamp": "2026-04-26T05:34:28.972Z",
+    "id": 4
   }
 ]

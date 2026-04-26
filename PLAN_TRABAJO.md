@@ -115,12 +115,16 @@ El sistema deberá organizarse siguiendo una arquitectura modular, validar datos
 
 ---
 
-### **Guillermo Aybar** (``):
+### **Guillermo Aybar** (`GuilleGearts`):
 
-- [ ] QA: probar todos los endpoints y vistas con casos válidos e inválidos
-- [ ] QA: verificar validaciones cruzadas entre módulos (empresa→empleado→novedad→seguimiento)
-- [ ] Verificar que el servidor levanta correctamente con `npm start` tras el merge
-- [ ] Coordinar y grabar el video grupal de 10 minutos
+- [x] QA: Probar todos los endpoints y vistas con casos válidos e inválidos (Happy/Sad Path)
+- [x] QA: Verificar validaciones cruzadas (Empresa → Empleado → Novedad → Seguimiento)
+- [x] Integración: Resolución de conflictos de Git y unificación de ramas en `main`
+- [x] Verificar que el servidor levanta correctamente con `npm start` tras la integración
+- [x] **Documentación OpenAPI:** Generación de archivos YAML para todos los módulos (Empresas, Empleados, Novedades, Seguimientos, Reportes)
+- [x] **Documentación OpenAPI:** Consolidación en `index.yaml` y esquema de errores estandarizado
+- [x] **Coordinación de Entrega:** Creación de guion detallado por clips para la grabación del video
+- [/] Coordinar y editar el video grupal de 10 minutos (En proceso)
 
 ---
 

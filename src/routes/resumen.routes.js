@@ -4,7 +4,7 @@ import { asyncHandler } from "../libs/asyncHandler.js";
 
 const router = Router();
 
-router.route("/")
-  .get(asyncHandler(ReporteController.getResumen));
+router.get("/",
+  asyncHandler(ReporteController.getResumen));
 
 export { router };

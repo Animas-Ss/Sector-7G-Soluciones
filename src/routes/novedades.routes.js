@@ -5,16 +5,18 @@ import { requireBody, requireFields } from "../middlewares/validation.middleware
 
 const router = Router();
 
-router.route("/")
-  .get(asyncHandler(NovedadController.getAll))
-  .post(
-    requireFields(["tipo", "descripcion", "fecha", "empresaId", "empleadoId"]),
-    asyncHandler(NovedadController.create)
-  );
-
+router.get("/", asyncHandler(NovedadController.getAll));
+router.get("/form", asyncHandler(NovedadController.getForm));
+router.get("/form/:id", asyncHandler(NovedadController.getForm));
 router.route("/:id")
   .get(asyncHandler(NovedadController.getById))
   .put(requireBody, asyncHandler(NovedadController.update))
   .delete(asyncHandler(NovedadController.delete));
+
+router.post(
+  "/",
+  requireFields(["tipo", "descripcion", "fecha", "empresaId", "empleadoId"]),
+  asyncHandler(NovedadController.create)
+);
 
 export { router };

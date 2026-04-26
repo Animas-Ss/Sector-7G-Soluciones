@@ -2,7 +2,11 @@ import { obtenerResumen } from "../services/reporte.service.js";
 
 class ReporteController {
   async getResumen(req, res) {
-    res.status(200).json(await obtenerResumen());
+    const resumen = await obtenerResumen();
+    res.render('reporte/resumen', {
+      titulo: 'Dashboard Operativo',
+      resumen
+    });
   }
 }
 

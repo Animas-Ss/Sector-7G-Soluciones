@@ -17,7 +17,6 @@ Cada módulo tiene su propio archivo. Para agregar la documentación de un nuevo
 Se puede generar un único archivo `bundle.yaml` que consolida todos los módulos:
 
 ```bash
-# Desde la carpeta backend/
 npm run docs:bundle
 ```
 

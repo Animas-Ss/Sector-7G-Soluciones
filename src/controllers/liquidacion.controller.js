@@ -5,23 +5,51 @@ import {
   listarLiquidaciones,
   obtenerLiquidacion,
 } from "../services/liquidacion.service.js";
+import { listarEmpresas } from "../services/empresa.service.js";
+import { listarEmpleados } from "../services/empleado.service.js";
 
-export const getLiquidaciones = async (req, res) => {
-  res.status(200).json(await listarLiquidaciones(req.query));
-};
+class LiquidacionController {
+  async getAll(req, res) {
+    const liquidaciones = await listarLiquidaciones(req.query);
+    res.render('liquidaciones/index', {
+      titulo: 'Listado de Liquidaciones',
+      liquidaciones
+    });
+  }
 
-export const getLiquidacion = async (req, res) => {
-  res.status(200).json(await obtenerLiquidacion(req.params.id));
-};
+  async getForm(req, res) {
+    const { id } = req.params;
+    const empresas = await listarEmpresas({});
+    const empleados = await listarEmpleados({});
+    let liquidacion = null;
+    if (id) liquidacion = await obtenerLiquidacion(id);
+    res.render('liquidaciones/form', {
+      titulo: id ? 'Editar Liquidación' : 'Nueva Liquidación',
+      liquidacion,
+      empresas,
+      empleados
+    });
+  }
 
-export const postLiquidacion = async (req, res) => {
-  res.status(201).json(await crearLiquidacion(req.body));
-};
+  async getById(req, res) {
+    const liquidacion = await obtenerLiquidacion(req.params.id);
+    res.render('liquidaciones/detalle', {
+      titulo: `Liquidación #${liquidacion.id}`,
+      liquidacion
+    });
+  }
 
-export const putLiquidacion = async (req, res) => {
-  res.status(200).json(await actualizarLiquidacion(req.params.id, req.body));
-};
+  async create(req, res) {
+    res.status(201).json(await crearLiquidacion(req.body));
+  }
 
-export const deleteLiquidacion = async (req, res) => {
-  res.status(200).json(await eliminarLiquidacion(req.params.id));
-};
+  async update(req, res) {
+    res.status(200).json(await actualizarLiquidacion(req.params.id, req.body));
+  }
+
+  async delete(req, res) {
+    res.status(200).json(await eliminarLiquidacion(req.params.id));
+  }
+}
+
+export default new LiquidacionController();

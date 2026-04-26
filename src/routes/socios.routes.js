@@ -1,29 +1,21 @@
 import { Router } from "express";
-import {
-  deleteSocio,
-  getSocio,
-  getSocios,
-  getFormSocio,
-  postSocio,
-  putSocio,
-} from "../controllers/socio.controller.js";
+import SocioController from "../controllers/socio.controller.js";
 import { asyncHandler } from "../libs/asyncHandler.js";
 import { requireBody, requireFields } from "../middlewares/validation.middleware.js";
 
 const router = Router();
 
-router.get("/", asyncHandler(getSocios));
+router.get("/", asyncHandler(SocioController.getAll.bind(SocioController)));
+router.get("/form", asyncHandler(SocioController.getForm.bind(SocioController)));
+router.get("/form/:id", asyncHandler(SocioController.getForm.bind(SocioController)));
+router.get("/:id", asyncHandler(SocioController.getById.bind(SocioController)));
 
-router.get("/form", asyncHandler(getFormSocio));
-router.get("/form/:id", asyncHandler(getFormSocio));
-
-router.get("/:id", asyncHandler(getSocio));
-router.post(
-  "/",
+router.post("/",
   requireFields(["nombre", "apellido", "dni", "email", "participacion", "fechaIngreso"]),
-  asyncHandler(postSocio)
+  asyncHandler(SocioController.create.bind(SocioController))
 );
-router.put("/:id", requireBody, asyncHandler(putSocio));
-router.delete("/:id", asyncHandler(deleteSocio));
+
+router.put("/:id", requireBody, asyncHandler(SocioController.update.bind(SocioController)));
+router.delete("/:id", asyncHandler(SocioController.delete.bind(SocioController)));
 
 export { router };

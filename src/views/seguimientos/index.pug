@@ -1,0 +1,26 @@
+extends ../layout
+
+block content
+  .container
+    .header-flex
+      div
+        h1= titulo
+        p Historial de acciones y comentarios sobre las novedades.
+      a.btn-nuevo(href="/api/seguimientos/form") + Agregar Comentario
+
+    table.empresas-table
+      thead
+        tr
+          th ID
+          th Novedad ID
+          th Fecha
+          th Responsable
+          th Comentario
+      tbody
+        each seg in seguimientos
+          tr
+            td= seg.id
+            td= seg.novedadId
+            td= seg.fecha
+            td= seg.responsable
+            td= seg.comentario

@@ -1,0 +1,40 @@
+extends ../layout
+
+block content
+  .container
+    h1= titulo
+    form(id="seguimientoForm" style="max-width: 600px; background: #2a2a40; padding: 30px; border-radius: 12px;")
+      input(type="hidden" name="id" value=seguimiento ? seguimiento.id : "")
+      
+      .form-group(style="margin-bottom: 20px;")
+        label Novedad Relacionada:
+        select(name="novedadId" required style="width: 100%; padding: 10px; border-radius: 6px; background: #44475a; color: white;")
+          option(value="") Seleccione una novedad...
+          each nov in novedades
+            option(value=nov.id selected=(seguimiento && seguimiento.novedadId == nov.id))= `Nov #${nov.id} - ${nov.tipo}`
+
+      .form-group(style="margin-bottom: 20px;")
+        label Responsable:
+        input(type="text" name="responsable" value=seguimiento ? seguimiento.responsable : "" required style="width: 100%; padding: 10px; border-radius: 6px; background: #44475a; color: white;")
+
+      .form-group(style="margin-bottom: 20px;")
+        label Fecha:
+        input(type="date" name="fecha" value=seguimiento ? seguimiento.fecha : "" required style="width: 100%; padding: 10px; border-radius: 6px; background: #44475a; color: white;")
+
+      .form-group(style="margin-bottom: 20px;")
+        label Comentario / Acción:
+        textarea(name="comentario" required style="width: 100%; padding: 10px; border-radius: 6px; background: #44475a; color: white; height: 100px;")= seguimiento ? seguimiento.comentario : ""
+
+      button.btn-nuevo(type="submit" style="width: 100%; border: none;") Guardar Seguimiento
+
+  script.
+    document.getElementById('seguimientoForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = Object.fromEntries(new FormData(e.target));
+      const res = await fetch('/api/seguimientos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+      if (res.ok) { window.location.href = '/api/seguimientos'; }
+    });

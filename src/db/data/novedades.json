@@ -34,5 +34,17 @@
     "activo": true,
     "createdAt": "2026-04-15T09:00:00.000Z",
     "updatedAt": "2026-04-15T09:00:00.000Z"
+  },
+  {
+    "tipo": "Accidente Trabajo",
+    "descripcion": "xxxxx",
+    "estado": "pendiente",
+    "fecha": "2026-04-26",
+    "empresaId": 1,
+    "empleadoId": 2,
+    "activo": true,
+    "createdAt": "2026-04-26T05:34:28.968Z",
+    "updatedAt": "2026-04-26T05:34:28.968Z",
+    "id": 4
   }
 ]

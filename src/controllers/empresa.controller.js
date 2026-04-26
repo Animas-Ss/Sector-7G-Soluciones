@@ -6,12 +6,10 @@ import {
   obtenerEmpresa,
 } from "../services/empresa.service.js";
 
-
-
 class EmpresaController {
   async getAll(req, res) {
     const empresas = await listarEmpresas(req.query);
-    res.render('empresas/index', { 
+    res.render('empresas/index', {
       titulo: 'Directorio de Empresas',
       empresas: empresas
     });
@@ -22,15 +20,15 @@ class EmpresaController {
     if (id) {
       // Busca ID para editar
       const empresa = await obtenerEmpresa(id);
-      res.render('empresas/form', { 
-        titulo: 'Editar Empresa', 
-        empresa 
+      res.render('empresas/form', {
+        titulo: 'Editar Empresa',
+        empresa
       });
     } else {
       // Si no hay ID, crea una empresa
-      res.render('empresas/form', { 
-        titulo: 'Nueva Empresa', 
-        empresa: null 
+      res.render('empresas/form', {
+        titulo: 'Nueva Empresa',
+        empresa: null
       });
     }
   }
@@ -38,8 +36,8 @@ class EmpresaController {
   async getById(req, res) {
     const empresa = await obtenerEmpresa(req.params.id);
     res.render('empresas/detalle', {
-    titulo: `Detalle: ${empresa.nombre}`,
-    empresa: empresa
+      titulo: `Detalle: ${empresa.nombre}`,
+      empresa: empresa
     });
   }
 

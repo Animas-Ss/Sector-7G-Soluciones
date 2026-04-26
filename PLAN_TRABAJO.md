@@ -105,21 +105,24 @@ El sistema deberá organizarse siguiendo una arquitectura modular, validar datos
 - [x] Vista inicio (`views/index.pug`): bienvenida con links a cada sección
 - [x] Vistas de Empresas: `views/empresas/index.pug`, `detalle.pug`, `form.pug`
 - [x] Vistas de Empleados: `views/empleados/index.pug`, `detalle.pug`, `form.pug`
-- [ ] Vistas de Novedades: `views/novedades/index.pug` (con filtros), `detalle.pug` (con seguimientos), `form.pug`
-- [ ] Vistas de Seguimiento: `views/seguimiento/index.pug`, `form.pug`
-- [ ] Vistas de Liquidaciones: `views/liquidaciones/index.pug`, `detalle.pug`, `form.pug`
+- [x] Vistas de Novedades: `views/novedades/index.pug` (con filtros), `detalle.pug` (con seguimientos), `form.pug`
+- [x] Vistas de Seguimiento: `views/seguimiento/index.pug`, `form.pug`
+- [x] Vistas de Liquidaciones: `views/liquidaciones/index.pug`, `detalle.pug`, `form.pug`
 - [x] Vistas de Socios: `views/socios/index.pug`, `detalle.pug`, `form.pug`
 - [x] Vista de Auditoría: `views/auditoria/index.pug` (con filtros)
-- [ ] Vista de Reporte/Resumen: `views/reporte/resumen.pug` (indicadores y tabla de impacto)
-- [ ] Actualizar todos los controllers para renderizar vistas Pug en lugar de responder JSON
+- [x] Vista de Reporte/Resumen: `views/reporte/resumen.pug` (indicadores y tabla de impacto)
+- [x] Actualizar todos los controllers para renderizar vistas Pug en lugar de responder JSON
 
 ---
 
 ### **Guillermo Aybar** (`GuilleGearts`):
 
-- [x] QA: probar todos los endpoints y vistas con casos válidos e inválidos
-- [x] QA: verificar validaciones cruzadas entre módulos (empresa→empleado→novedad→seguimiento)
-- [x] Coordinar y grabar el video grupal de 10 minutos
+- [x] QA: Probar todos los endpoints y vistas con casos válidos e inválidos (Happy/Sad Path)
+- [x] QA: Verificar validaciones cruzadas (Empresa → Empleado → Novedad → Seguimiento)
+- [x] **Documentación OpenAPI:** Generación de archivos YAML para todos los módulos (Empresas, Empleados, Novedades, Seguimientos, Reportes)
+- [x] **Documentación OpenAPI:** Consolidación en `index.yaml` y esquema de errores estandarizado
+- [x] **Coordinación de Entrega:** Creación de guion detallado por clips para la grabación del video
+- [/] Coordinar y editar el video grupal de 10 minutos (En proceso)
 
 ---
 
@@ -221,7 +224,7 @@ style:  solo cambié formato, nada de lógica
 - [x] REPORTE
 - [x] LIQUIDACIÓN
 - [x] SOCIOS
-- [ ] QA/VALIDACIÓN
+- [x] QA/VALIDACIÓN
 
 ---
 

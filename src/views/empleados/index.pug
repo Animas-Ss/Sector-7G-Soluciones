@@ -28,7 +28,7 @@ block content
         h1= titulo || 'Nómina de Empleados'
         p Gestioná el personal registrado
       div
-        a.btn-nuevo(href="/api/empleados/form") Nuevo Empleado
+        a.btn-nuevo(href="/empleados/form") Nuevo Empleado
 
     table.data-table
       thead
@@ -51,8 +51,8 @@ block content
                 else
                   span.badge-inactivo Inactivo
               td
-                a.btn-accion(href=`/api/empleados/${emp.id}`) Ver
-                a.btn-accion.btn-editar(href=`/api/empleados/form/${emp.id}`) Editar
+                a.btn-accion(href=`/empleados/${emp.id}`) Ver
+                a.btn-accion.btn-editar(href=`/empleados/form/${emp.id}`) Editar
                 if emp.activo
                   button.btn-accion.btn-baja(onclick=`darDeBaja(${emp.id})`) Dar de Baja
         else

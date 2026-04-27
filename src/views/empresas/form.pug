@@ -15,7 +15,7 @@ block content
     .btn-volver:hover { color: #f8f8f2; }
 
   .container
-    a.btn-volver(href="/api/empresas") Cancelar y volver
+    a.btn-volver(href="/empresas") Cancelar y volver
 
     .card-form
       //- Cambiar el título de acuerdo a la empresa
@@ -65,7 +65,7 @@ block content
 
         if (response.ok) {
  
-          window.location.href = '/api/empresas';
+          window.location.href = '/empresas';
         } else {
           const errorData = await response.json();
           alert('Error: ' + (errorData.message || 'No se pudo guardar la empresa'));

@@ -1,23 +1,25 @@
 import { Router } from "express";
-import EmpresaController from "../controllers/empresa.controller.js";
+import EmpresaController from "../controllers/api/empresa.controller.js";
+import EmpresaViewController from "../controllers/view/empresa.controller.js";
 import { asyncHandler } from "../libs/asyncHandler.js";
 import { requireBody, requireFields } from "../middlewares/validation.middleware.js";
 
-const router = Router();
+// Vistas
+const viewRouter = Router();
+viewRouter.get("/",         asyncHandler(EmpresaViewController.getAll));
+viewRouter.get("/form",     asyncHandler(EmpresaViewController.getForm));
+viewRouter.get("/form/:id", asyncHandler(EmpresaViewController.getForm));
+viewRouter.get("/:id",      asyncHandler(EmpresaViewController.getById));
 
-router.route("/")
-  .get(asyncHandler(EmpresaController.getAll))
-  .post(
-    requireFields(["nombre", "cuit", "rubro", "contacto"]),
-    asyncHandler(EmpresaController.create)
-  );
+// API JSON
+const apiRouter = Router();
+apiRouter.get("/",    asyncHandler(EmpresaController.list));
+apiRouter.get("/:id", asyncHandler(EmpresaController.show));
+apiRouter.post("/",
+  requireFields(["nombre", "cuit", "rubro", "contacto"]),
+  asyncHandler(EmpresaController.create)
+);
+apiRouter.put("/:id",    requireBody, asyncHandler(EmpresaController.update));
+apiRouter.delete("/:id", asyncHandler(EmpresaController.delete));
 
-  router.get("/form", asyncHandler(EmpresaController.getForm));
-  router.get("/form/:id", asyncHandler(EmpresaController.getForm));
-
-router.route("/:id")
-  .get(asyncHandler(EmpresaController.getById))
-  .put(requireBody, asyncHandler(EmpresaController.update))
-  .delete(asyncHandler(EmpresaController.delete));
-
-export { router };
+export { viewRouter, apiRouter };

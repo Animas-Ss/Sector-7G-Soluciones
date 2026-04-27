@@ -1,10 +1,14 @@
 import { Router } from "express";
-import AuditoriaController from "../controllers/auditoria.controller.js";
+import AuditoriaController from "../controllers/api/auditoria.controller.js";
+import AuditoriaViewController from "../controllers/view/auditoria.controller.js";
 import { asyncHandler } from "../libs/asyncHandler.js";
 
-const router = Router();
+// Vista
+const viewRouter = Router();
+viewRouter.get("/", asyncHandler(AuditoriaViewController.getAll));
 
-router.route("/")
-  .get(asyncHandler(AuditoriaController.getAll));
+// API JSON
+const apiRouter = Router();
+apiRouter.get("/", asyncHandler(AuditoriaController.list));
 
-export { router };
+export { viewRouter, apiRouter };

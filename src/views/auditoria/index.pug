@@ -33,7 +33,7 @@ block content
 
     //- Filtros
     .filter-bar
-      form.filter-form(action="/api/auditoria" method="GET")
+      form.filter-form(action="/auditoria" method="GET")
         input.filter-control(type="date" name="fecha")
         
         select.filter-control(name="modulo")
@@ -47,7 +47,7 @@ block content
         input.filter-control(type="text" name="usuario" placeholder="Buscar por usuario...")
         
         button.btn-filtrar(type="submit") Filtrar
-        a.btn-limpiar(href="/api/auditoria") Limpiar
+        a.btn-limpiar(href="/auditoria") Limpiar
 
     //- Tabla de Registros
     table.data-table

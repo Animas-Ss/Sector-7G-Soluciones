@@ -50,7 +50,7 @@ block content
 
         div(style="margin-top: 30px;")
           button.btn-guardar(type="submit") Guardar Socio
-          a.btn-cancelar(href="/api/socios") Cancelar
+          a.btn-cancelar(href="/socios") Cancelar
 
   script.
     document.getElementById('socioForm').addEventListener('submit', async (e) => {
@@ -78,7 +78,7 @@ block content
         });
         
         if (response.ok) {
-          window.location.href = '/api/socios';
+          window.location.href = '/socios';
         } else {
           const err = await response.json();
           alert('Error de validación: ' + (err.message || 'Revisá los campos'));

@@ -182,7 +182,7 @@ La segunda entrega profundiza los contenidos de la materia incorporando **persis
 - [ ] Agregar script `"seed"` en `package.json` para poblar la base de datos con datos de prueba
 - [ ] Actualizar el `README.md` principal con instrucciones de instalación de MongoDB local y configuración
 
-> ⚠️ **Requisito previo para todo el equipo:** cada integrante debe tener instalado **MongoDB Community Server** ([mongodb.com/try/download/community](https://www.mongodb.com/try/download/community)) y el servicio corriendo localmente antes de levantar la app. Se recomienda también instalar **MongoDB Compass** para visualizar los datos (útil para el video).
+> **Requisito previo para todo el equipo:** cada integrante debe tener instalado **MongoDB Community Server** ([mongodb.com/try/download/community](https://www.mongodb.com/try/download/community)) y el servicio corriendo localmente antes de levantar la app. Se recomienda también instalar **MongoDB Compass** para visualizar los datos (útil para el video).
 
 **Entregables clave:**
 - `src/config/app.config.js` con `connectDB()`

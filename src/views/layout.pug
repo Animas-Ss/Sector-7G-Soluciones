@@ -52,6 +52,11 @@ html(lang="es")
             li: a(href="#") Seguimientos
             li: a(href="/resumen") Reportes
             li: a(href="#") Auditoría
+            if usuarioSesion
+              //- TODO: agregar link a /usuarios/nuevo cuando se implemente el alta de usuarios
+              li
+                form(action="/logout" method="POST" style="margin:0")
+                  button(type="submit" style="background:none;border:none;color:#ff79c6;font-weight:bold;cursor:pointer;font-size:1rem;padding:0") Salir (#{usuarioSesion.usuario})
     main
       //- Contenido 
       block content

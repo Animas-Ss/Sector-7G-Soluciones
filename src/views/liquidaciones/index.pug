@@ -6,7 +6,7 @@ block content
       div
         h1= titulo || 'Listado de Liquidaciones'
         p Historial de haberes liquidados en el sistema.
-      a.btn-nuevo(href="/liquidaciones/form") + Nueva Liquidación
+      a.btn-nuevo(href="/liquidaciones/form") Nueva Liquidación
 
     table.empresas-table
       thead
@@ -15,18 +15,22 @@ block content
           th Empleado
           th Empresa
           th Período
-          th Monto
+          th Total Neto
           th Estado
           th Acciones
+
       tbody
         each liq in liquidaciones
           tr
-            td= liq.id
-            td= liq.empleadoId
-            td= liq.empresaId
+            td= liq._id
+            td= liq.empleadoId ? `${liq.empleadoId.nombre} ${liq.empleadoId.apellido}` : 'N/A'
+            td= liq.empresaId ? liq.empresaId.nombre : 'N/A'
             td= liq.periodo
-            td $ #{liq.monto}
+            td $ #{liq.totalNeto}
             td
-              span.badge-activo= liq.estado || 'Procesado'
+              if liq.activa
+                span.badge-activo Activa
+              else
+                span.badge-inactivo Inactiva
             td
-              a.btn-accion(href=`/liquidaciones/${liq.id}`) Ver Detalle
+              a.btn-accion(href=`/liquidaciones/${liq._id}`) Ver Detalle

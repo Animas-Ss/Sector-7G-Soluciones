@@ -2,7 +2,6 @@ import { liquidacionDb } from "../db/liquidacion.db.js";
 import { empleadoDb } from "../db/empleado.db.js";
 import { empresaDb } from "../db/empresa.db.js";
 import { badRequest, notFound } from "../libs/errors.js";
-import { createLiquidacion, updateLiquidacion } from "../models/liquidacion.js";
 import { registrarAuditoria } from "./auditoria.service.js";
 
 const LIQUIDACION_ESTADOS = ["pendiente", "procesada", "rechazada"];
@@ -17,8 +16,8 @@ const validarEstado = (estado) => {
 
 const validarEmpleadoYEmpresa = async (empleadoId, empresaId) => {
   const [empleado, empresa] = await Promise.all([
-    empleadoDb.getById(empleadoId),
-    empresaDb.getById(empresaId),
+    empleadoDb.findById(empleadoId),
+    empresaDb.findById(empresaId),
   ]);
 
   if (!empresa) {
@@ -37,92 +36,62 @@ const validarEmpleadoYEmpresa = async (empleadoId, empresaId) => {
     throw badRequest("El empleado indicado se encuentra inactivo.");
   }
 
-  if (empleado.empresaId !== empresa.id) {
+  if (empleado.empresaId.toString() !== empresa._id.toString()) {
     throw badRequest("El empleado no pertenece a la empresa indicada.");
   }
 
   return { empleado, empresa };
 };
 
-const buildLiquidacionView = (liquidacion, empleado, empresa) => ({
-  ...liquidacion,
-  empresa: empresa
-    ? { id: empresa.id, nombre: empresa.nombre, cuit: empresa.cuit }
-    : null,
-  empleado: empleado
-    ? {
-        id: empleado.id,
-        nombre: empleado.nombre,
-        apellido: empleado.apellido,
-        puesto: empleado.puesto,
-      }
-    : null,
-});
-
 export const listarLiquidaciones = async ({ empresaId, empleadoId, estado, activo } = {}) => {
   validarEstado(estado);
 
-  const [liquidaciones, empleados, empresas] = await Promise.all([
-    liquidacionDb.getAll(),
-    empleadoDb.getAll(),
-    empresaDb.getAll(),
-  ]);
+  const liquidaciones = await liquidacionDb.findAll();
 
-  return liquidaciones
-    .filter((liq) => {
-      const coincideEmpresa = empresaId ? liq.empresaId === Number(empresaId) : true;
-      const coincideEmpleado = empleadoId ? liq.empleadoId === Number(empleadoId) : true;
-      const coincideEstado = estado ? liq.estado === estado : true;
-      const coincideActivo =
-        activo === undefined ? true : liq.activo === (activo === "true");
+  return liquidaciones.filter((liq) => {
+    const coincideEmpresa = empresaId 
+      ? liq.empresaId._id.toString() === String(empresaId) 
+      : true;
+      
+    const coincideEmpleado = empleadoId 
+      ? liq.empleadoId._id.toString() === String(empleadoId) 
+      : true;
+      
+    const coincideEstado = estado ? liq.estado === estado : true;
+    const coincideActivo =
+      activo === undefined ? true : liq.activo === (activo === "true");
 
-      return coincideEmpresa && coincideEmpleado && coincideEstado && coincideActivo;
-    })
-    .map((liq) =>
-      buildLiquidacionView(
-        liq,
-        empleados.find((e) => e.id === liq.empleadoId),
-        empresas.find((e) => e.id === liq.empresaId)
-      )
-    );
+    return coincideEmpresa && coincideEmpleado && coincideEstado && coincideActivo;
+  });
 };
 
+
 export const obtenerLiquidacion = async (id) => {
-  const [liquidacion, empleados, empresas] = await Promise.all([
-    liquidacionDb.getById(id),
-    empleadoDb.getAll(),
-    empresaDb.getAll(),
-  ]);
+  const liquidacion = await liquidacionDb.findById(id);
 
-  if (!liquidacion) {
-    throw notFound("Liquidacion no encontrada.");
-  }
+  if (!liquidacion) throw notFound("Liquidacion no encontrada.");
 
-  return buildLiquidacionView(
-    liquidacion,
-    empleados.find((e) => e.id === liquidacion.empleadoId),
-    empresas.find((e) => e.id === liquidacion.empresaId)
-  );
+  return liquidacion;
 };
 
 export const crearLiquidacion = async (payload) => {
   validarEstado(payload.estado);
   await validarEmpleadoYEmpresa(payload.empleadoId, payload.empresaId);
 
-  const liquidacion = await liquidacionDb.create(createLiquidacion(payload));
+  const liquidacion = await liquidacionDb.create(payload);
 
   await registrarAuditoria({
     entidad: "liquidacion",
-    entidadId: liquidacion.id,
+    entidadId: liquidacion._id,
     accion: "creacion",
-    descripcion: `Se creo la liquidacion ${liquidacion.id} para el empleado ${liquidacion.empleadoId} (periodo ${liquidacion.periodo}).`,
+    descripcion: `Se creo la liquidacion ${liquidacion._id} para el empleado ${liquidacion.empleadoId} (periodo ${liquidacion.periodo}).`,
   });
 
   return liquidacion;
 };
 
 export const actualizarLiquidacion = async (id, payload) => {
-  const liquidacion = await liquidacionDb.getById(id);
+  const liquidacion = await liquidacionDb.findById(id);
 
   if (!liquidacion) {
     throw notFound("Liquidacion no encontrada.");
@@ -130,40 +99,35 @@ export const actualizarLiquidacion = async (id, payload) => {
 
   validarEstado(payload.estado);
 
-  const empresaId =
-    payload.empresaId !== undefined ? Number(payload.empresaId) : liquidacion.empresaId;
-  const empleadoId =
-    payload.empleadoId !== undefined ? Number(payload.empleadoId) : liquidacion.empleadoId;
-
+  const empresaId = payload.empresaId !== undefined ? payload.empresaId : liquidacion.empresaId._id;
+  const empleadoId = payload.empleadoId !== undefined ? payload.empleadoId : liquidacion.empleadoId._id;
+  
   await validarEmpleadoYEmpresa(empleadoId, empresaId);
 
   const estadoAnterior = liquidacion.estado;
-  const liquidacionActualizada = await liquidacionDb.update(
-    id,
-    updateLiquidacion(liquidacion, payload)
-  );
+  const liquidacionActualizada = await liquidacionDb.update(id, payload);
 
   if (payload.estado && payload.estado !== estadoAnterior) {
     await registrarAuditoria({
       entidad: "liquidacion",
-      entidadId: liquidacion.id,
+      entidadId: liquidacion._id,
       accion: "cambio_estado",
-      descripcion: `La liquidacion ${liquidacion.id} cambio de ${estadoAnterior} a ${payload.estado}.`,
+      descripcion: `La liquidacion ${liquidacion._id} cambio de ${estadoAnterior} a ${payload.estado}.`,
     });
   }
 
   await registrarAuditoria({
     entidad: "liquidacion",
-    entidadId: liquidacion.id,
+    entidadId: liquidacion._id,
     accion: "modificacion",
-    descripcion: `Se actualizo la liquidacion ${liquidacion.id}.`,
+    descripcion: `Se actualizo la liquidacion ${liquidacion._id}.`,
   });
 
   return liquidacionActualizada;
 };
 
 export const eliminarLiquidacion = async (id) => {
-  const liquidacion = await liquidacionDb.getById(id);
+  const liquidacion = await liquidacionDb.findById(id);
 
   if (!liquidacion) {
     throw notFound("Liquidacion no encontrada.");
@@ -177,9 +141,9 @@ export const eliminarLiquidacion = async (id) => {
 
   await registrarAuditoria({
     entidad: "liquidacion",
-    entidadId: liquidacion.id,
+    entidadId: liquidacion._id,
     accion: "baja_logica",
-    descripcion: `Se dio de baja la liquidacion ${liquidacion.id}.`,
+    descripcion: `Se dio de baja la liquidacion ${liquidacion._id}.`,
   });
 
   return liquidacionEliminada;

@@ -1,6 +1,5 @@
 import { socioDb } from "../db/socio.db.js";
 import { badRequest, notFound } from "../libs/errors.js";
-import { createSocio, updateSocio } from "../models/socio.js";
 import { registrarAuditoria } from "./auditoria.service.js";
 
 const validarParticipacion = (participacion) => {
@@ -11,9 +10,9 @@ const validarParticipacion = (participacion) => {
 };
 
 const validarDniUnico = async (dni, excludeId = null) => {
-  const socios = await socioDb.getAll();
+  const socios = await socioDb.findAll();
   const duplicado = socios.find(
-    (s) => s.dni === String(dni).trim() && s.id !== excludeId
+    (s) => s.dni === String(dni).trim() && s._id.toString !== excludeId
   );
 
   if (duplicado) {
@@ -22,7 +21,7 @@ const validarDniUnico = async (dni, excludeId = null) => {
 };
 
 export const listarSocios = async ({ activo } = {}) => {
-  const socios = await socioDb.getAll();
+  const socios = await socioDb.findAll();
 
   return socios.filter((socio) => {
     return activo === undefined ? true : socio.activo === (activo === "true");
@@ -30,7 +29,7 @@ export const listarSocios = async ({ activo } = {}) => {
 };
 
 export const obtenerSocio = async (id) => {
-  const socio = await socioDb.getById(id);
+  const socio = await socioDb.findById(id);
 
   if (!socio) {
     throw notFound("Socio no encontrado.");
@@ -43,20 +42,20 @@ export const crearSocio = async (payload) => {
   validarParticipacion(payload.participacion);
   await validarDniUnico(payload.dni);
 
-  const socio = await socioDb.create(createSocio(payload));
+  const socio = await socioDb.create(payload);
 
   await registrarAuditoria({
     entidad: "socio",
-    entidadId: socio.id,
+    entidadId: socio._id,
     accion: "creacion",
-    descripcion: `Se creó el socio ${socio.id} (${socio.nombre} ${socio.apellido}, DNI ${socio.dni}).`,
+    descripcion: `Se creó el socio ${socio._id} (${socio.nombre} ${socio.apellido}, DNI ${socio.dni}).`,
   });
 
   return socio;
 };
 
 export const actualizarSocio = async (id, payload) => {
-  const socio = await socioDb.getById(id);
+  const socio = await socioDb.findById(id);
 
   if (!socio) {
     throw notFound("Socio no encontrado.");
@@ -70,20 +69,20 @@ export const actualizarSocio = async (id, payload) => {
     await validarDniUnico(payload.dni, socio.id);
   }
 
-  const socioActualizado = await socioDb.update(id, updateSocio(socio, payload));
+  const socioActualizado = await socioDb.update(id, payload);
 
   await registrarAuditoria({
     entidad: "socio",
-    entidadId: socio.id,
+    entidadId: socio._id,
     accion: "modificacion",
-    descripcion: `Se actualizó el socio ${socio.id} (${socio.nombre} ${socio.apellido}).`,
+    descripcion: `Se actualizó el socio ${socio._id} (${socio.nombre} ${socio.apellido}).`,
   });
 
   return socioActualizado;
 };
 
 export const eliminarSocio = async (id) => {
-  const socio = await socioDb.getById(id);
+  const socio = await socioDb.findById(id);
 
   if (!socio) {
     throw notFound("Socio no encontrado.");
@@ -93,13 +92,13 @@ export const eliminarSocio = async (id) => {
     throw badRequest("El socio ya se encuentra inactivo.");
   }
 
-  const socioEliminado = await socioDb.remove(id);
+  const socioEliminado = await socioDb.delete(id);
 
   await registrarAuditoria({
     entidad: "socio",
-    entidadId: socio.id,
+    entidadId: socio._id,
     accion: "baja_logica",
-    descripcion: `Se dio de baja el socio ${socio.id} (${socio.nombre} ${socio.apellido}, DNI ${socio.dni}).`,
+    descripcion: `Se dio de baja el socio ${socio._id} (${socio.nombre} ${socio.apellido}, DNI ${socio.dni}).`,
   });
 
   return socioEliminado;

@@ -1,41 +1,16 @@
-import { nowIso } from "../libs/time.js";
+import mongoose from 'mongoose';
 
-export const createSocio = (payload) => {
-  const timestamp = nowIso();
+const socioSchema = new mongoose.Schema({
+  nombre: { type: String, required: true, trim: true },
+  apellido: { type: String, required: true, trim: true },
+  dni: { type: String, required: true, unique: true, trim: true },
+  email: { type: String, trim: true },
+  telefono: { type: String, trim: true },
+  participacion: { type: Number, required: true, min: 1, max: 100 },
+  fechaIngreso: { type: Date },
+  activo: { type: Boolean, default: true }
+  }, 
+  { timestamps: true }
+);
 
-  return {
-    nombre: payload.nombre.trim(),
-    apellido: payload.apellido.trim(),
-    dni: String(payload.dni).trim(),
-    email: payload.email.trim(),
-    telefono: payload.telefono ? payload.telefono.trim() : null,
-    participacion: Number(payload.participacion),
-    fechaIngreso: payload.fechaIngreso,
-    activo: true,
-    createdAt: timestamp,
-    updatedAt: timestamp,
-  };
-};
-
-export const updateSocio = (currentSocio, payload) => ({
-  ...currentSocio,
-  nombre:
-    payload.nombre !== undefined ? payload.nombre.trim() : currentSocio.nombre,
-  apellido:
-    payload.apellido !== undefined ? payload.apellido.trim() : currentSocio.apellido,
-  dni:
-    payload.dni !== undefined ? String(payload.dni).trim() : currentSocio.dni,
-  email:
-    payload.email !== undefined ? payload.email.trim() : currentSocio.email,
-  telefono:
-    payload.telefono !== undefined ? payload.telefono.trim() : currentSocio.telefono,
-  participacion:
-    payload.participacion !== undefined
-      ? Number(payload.participacion)
-      : currentSocio.participacion,
-  fechaIngreso:
-    payload.fechaIngreso !== undefined
-      ? payload.fechaIngreso
-      : currentSocio.fechaIngreso,
-  updatedAt: nowIso(),
-});
+export const Socio = mongoose.model('Socio', socioSchema);

@@ -5,6 +5,7 @@ import bcrypt from "bcrypt";
 import { Usuario } from "../models/usuario.js";
 import { Liquidacion } from "../models/liquidacion.js";
 import { Socio } from "../models/socio.js";
+import { Auditoria } from "../models/auditoria.js";
 import { Novedad } from "../models/novedad.js";
 import { Seguimiento } from "../models/seguimiento.js";
 
@@ -16,6 +17,7 @@ await Promise.all([
   Liquidacion.deleteMany({}),
   Socio.deleteMany({}),
   Usuario.deleteMany({}),
+  Auditoria.deleteMany({}),
   Novedad.deleteMany({}),
   Seguimiento.deleteMany({})
 ]);

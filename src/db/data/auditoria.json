@@ -126,5 +126,77 @@
     "descripcion": "Se dio de baja el empleado Florencia Marc.",
     "timestamp": "2026-05-20T18:20:51.742Z",
     "id": 16
+  },
+  {
+    "entidad": "novedad",
+    "entidadId": null,
+    "accion": "creacion",
+    "descripcion": "Se creo la novedad Licencia Medica para el empleado [object Object].",
+    "timestamp": "2026-05-24T20:57:16.752Z",
+    "id": 17
+  },
+  {
+    "entidad": "novedad",
+    "entidadId": null,
+    "accion": "creacion",
+    "descripcion": "Se creo la novedad Licencia Medica para el empleado [object Object].",
+    "timestamp": "2026-05-24T20:59:03.344Z",
+    "id": 18
+  },
+  {
+    "entidad": "novedad",
+    "entidadId": null,
+    "accion": "modificacion",
+    "descripcion": "Se actualizo la novedad 6a13650dae4f82726e29352b.",
+    "timestamp": "2026-05-24T21:04:23.699Z",
+    "id": 19
+  },
+  {
+    "entidad": "novedad",
+    "entidadId": null,
+    "accion": "creacion",
+    "descripcion": "Se creo la novedad Licencia Medica para el empleado [object Object].",
+    "timestamp": "2026-05-24T21:06:21.047Z",
+    "id": 20
+  },
+  {
+    "entidad": "empleado",
+    "entidadId": null,
+    "accion": "creacion",
+    "descripcion": "Se creo el empleado sebastian sosa.",
+    "timestamp": "2026-05-24T21:07:21.124Z",
+    "id": 21
+  },
+  {
+    "entidad": "novedad",
+    "entidadId": null,
+    "accion": "creacion",
+    "descripcion": "Se creo la novedad Accidente Trabajo para el empleado [object Object].",
+    "timestamp": "2026-05-24T21:11:41.847Z",
+    "id": 22
+  },
+  {
+    "entidad": "empleado",
+    "entidadId": null,
+    "accion": "creacion",
+    "descripcion": "Se creo el empleado Patricio Sosa.",
+    "timestamp": "2026-05-24T21:23:09.325Z",
+    "id": 23
+  },
+  {
+    "entidad": "empleado",
+    "entidadId": null,
+    "accion": "creacion",
+    "descripcion": "Se creo el empleado Pepe Grillo.",
+    "timestamp": "2026-05-24T21:26:55.554Z",
+    "id": 24
+  },
+  {
+    "entidad": "novedad",
+    "entidadId": null,
+    "accion": "creacion",
+    "descripcion": "Se creo la novedad Accidente Trabajo para el empleado [object Object].",
+    "timestamp": "2026-05-24T21:42:28.414Z",
+    "id": 25
   }
 ]

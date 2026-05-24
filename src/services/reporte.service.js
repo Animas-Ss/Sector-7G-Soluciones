@@ -45,7 +45,7 @@ export const obtenerResumen = async () => {
       impactoGeneral: calcularImpacto(novedadesActivas.length),
       detallePorEmpresa: empresasActivas.map((empresa) => {
         const novedadesEmpresa = novedadesActivas.filter(
-          (novedad) => novedad.empresaId === empresa.id,
+          (novedad) => String(novedad.empresaId?._id ?? novedad.empresaId) === String(empresa.id),
         );
 
         return {

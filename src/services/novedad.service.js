@@ -33,7 +33,9 @@ const validarRelacionEmpleadoEmpresa = async (empleadoId, empresaId) => {
     throw badRequest("Empleado o empresa inactivos.");
   }
 
-  if (empleado.empresaId !== empresa.id) {
+  const empIdInEmpleado = String(empleado.empresaId?._id ?? empleado.empresaId);
+  const targetEmpresaId = String(empresa.id ?? empresa._id);
+  if (empIdInEmpleado !== targetEmpresaId) {
     throw badRequest("El empleado no pertenece a la empresa indicada.");
   }
 
@@ -44,23 +46,23 @@ const buildNovedadView = (novedad, empleado, empresa, seguimientos) => ({
   ...novedad,
   empresa: empresa
     ? {
-        id: empresa.id,
+        id: String(empresa._id ?? empresa.id),
         nombre: empresa.nombre,
         cuit: empresa.cuit,
       }
     : null,
   empleado: empleado
     ? {
-        id: empleado.id,
+        id: String(empleado._id ?? empleado.id),
         nombre: empleado.nombre,
         apellido: empleado.apellido,
         email: empleado.email,
       }
     : null,
   seguimientos: seguimientos
-    .filter((seguimiento) => seguimiento.novedadId === novedad.id)
+    .filter((seguimiento) => String(seguimiento.novedadId?._id ?? seguimiento.novedadId) === String(novedad.id))
     .map((seguimiento) => ({
-      id: seguimiento.id,
+      id: String(seguimiento._id ?? seguimiento.id),
       fecha: seguimiento.fecha,
       responsable: seguimiento.responsable,
       activo: seguimiento.activo,
@@ -70,17 +72,15 @@ const buildNovedadView = (novedad, empleado, empresa, seguimientos) => ({
 export const listarNovedades = async ({ empresaId, estado, activo } = {}) => {
   validarEstado(estado);
 
-  const [novedades, empresas, empleados, seguimientos] = await Promise.all([
+  const [novedades, seguimientos] = await Promise.all([
     novedadDb.getAll(),
-    empresaDb.getAll(),
-    empleadoDb.getAll(),
     seguimientoDb.getAll(),
   ]);
 
   return novedades
     .filter((novedad) => {
       const coincideEmpresa = empresaId
-        ? novedad.empresaId === Number(empresaId)
+        ? String(novedad.empresaId?._id ?? novedad.empresaId) === String(empresaId)
         : true;
       const coincideEstado = estado ? novedad.estado === estado : true;
       const coincideActivo =
@@ -91,18 +91,16 @@ export const listarNovedades = async ({ empresaId, estado, activo } = {}) => {
     .map((novedad) =>
       buildNovedadView(
         novedad,
-        empleados.find((empleado) => empleado.id === novedad.empleadoId),
-        empresas.find((empresa) => empresa.id === novedad.empresaId),
+        novedad.empleadoId,
+        novedad.empresaId,
         seguimientos,
       ),
     );
 };
 
 export const obtenerNovedad = async (id) => {
-  const [novedad, empresas, empleados, seguimientos] = await Promise.all([
+  const [novedad, seguimientos] = await Promise.all([
     novedadDb.getById(id),
-    empresaDb.getAll(),
-    empleadoDb.getAll(),
     seguimientoDb.getAll(),
   ]);
 
@@ -112,8 +110,8 @@ export const obtenerNovedad = async (id) => {
 
   return buildNovedadView(
     novedad,
-    empleados.find((empleado) => empleado.id === novedad.empleadoId),
-    empresas.find((empresa) => empresa.id === novedad.empresaId),
+    novedad.empleadoId,
+    novedad.empresaId,
     seguimientos,
   );
 };
@@ -144,9 +142,9 @@ export const actualizarNovedad = async (id, payload) => {
   validarEstado(payload.estado);
 
   const empresaId =
-    payload.empresaId !== undefined ? Number(payload.empresaId) : novedad.empresaId;
+    payload.empresaId !== undefined ? payload.empresaId : String(novedad.empresaId?._id ?? novedad.empresaId);
   const empleadoId =
-    payload.empleadoId !== undefined ? Number(payload.empleadoId) : novedad.empleadoId;
+    payload.empleadoId !== undefined ? payload.empleadoId : String(novedad.empleadoId?._id ?? novedad.empleadoId);
 
   await validarRelacionEmpleadoEmpresa(empleadoId, empresaId);
 
@@ -184,7 +182,7 @@ export const eliminarNovedad = async (id) => {
   }
 
   const tieneSeguimientosActivos = seguimientos.some(
-    (seguimiento) => seguimiento.novedadId === novedad.id && seguimiento.activo,
+    (seguimiento) => String(seguimiento.novedadId?._id ?? seguimiento.novedadId) === String(novedad.id) && seguimiento.activo,
   );
 
   if (tieneSeguimientosActivos) {

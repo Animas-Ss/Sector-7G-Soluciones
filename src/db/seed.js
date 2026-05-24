@@ -5,7 +5,8 @@ import bcrypt from "bcrypt";
 import { Usuario } from "../models/usuario.js";
 import { Liquidacion } from "../models/liquidacion.js";
 import { Socio } from "../models/socio.js";
-
+import { Novedad } from "../models/novedad.js";
+import { Seguimiento } from "../models/seguimiento.js";
 
 await connectDB();
 
@@ -13,8 +14,11 @@ await Promise.all([
   Empleado.deleteMany({}), 
   Empresa.deleteMany({}),
   Liquidacion.deleteMany({}),
-  Socio.deleteMany({})
-, Usuario.deleteMany({})]);
+  Socio.deleteMany({}),
+  Usuario.deleteMany({}),
+  Novedad.deleteMany({}),
+  Seguimiento.deleteMany({})
+]);
 
 const adminPassword = await bcrypt.hash("admin123", 10);
 const clientePassword = await bcrypt.hash("cliente123", 10);
@@ -166,6 +170,94 @@ await Liquidacion.insertMany([
     periodo: "2026-04", 
     totalBruto: 520000, 
     totalNeto: 431600 
+  }
+]);
+
+const novedades = await Novedad.insertMany([
+  {
+    tipo: "Licencia Medica",
+    descripcion: "Licencia médica por gripe fuerte por 48 horas.",
+    estado: "pendiente",
+    fecha: "2026-05-10",
+    empresaId: empresas[0]._id,
+    empleadoId: empleados[0]._id,
+    activo: true
+  },
+  {
+    tipo: "Accidente Trabajo",
+    descripcion: "Esguince de tobillo en horario laboral.",
+    estado: "procesada",
+    fecha: "2026-05-12",
+    empresaId: empresas[0]._id,
+    empleadoId: empleados[1]._id,
+    activo: true
+  },
+  {
+    tipo: "Sancion",
+    descripcion: "Llegada tarde reiterada sin justificación.",
+    estado: "rechazada",
+    fecha: "2026-05-14",
+    empresaId: empresas[1]._id,
+    empleadoId: empleados[2]._id,
+    activo: true
+  },
+  {
+    tipo: "Licencia Medica",
+    descripcion: "Operación programada de apéndice, 10 días.",
+    estado: "pendiente",
+    fecha: "2026-05-15",
+    empresaId: empresas[2]._id,
+    empleadoId: empleados[3]._id,
+    activo: true
+  },
+  {
+    tipo: "Licencia Medica",
+    descripcion: "Control médico anual rutinario.",
+    estado: "procesada",
+    fecha: "2026-05-16",
+    empresaId: empresas[2]._id,
+    empleadoId: empleados[4]._id,
+    activo: true
+  },
+  {
+    tipo: "Sancion",
+    descripcion: "Incumplimiento de normas de seguridad interna.",
+    estado: "pendiente",
+    fecha: "2026-05-18",
+    empresaId: empresas[3]._id,
+    empleadoId: empleados[5]._id,
+    activo: true
+  }
+]);
+
+await Seguimiento.insertMany([
+  {
+    novedadId: novedades[0]._id,
+    fecha: "2026-05-11",
+    responsable: "Juan Pérez (Recursos Humanos)",
+    comentario: "Se solicita al empleado presentar el certificado médico correspondiente.",
+    activo: true
+  },
+  {
+    novedadId: novedades[0]._id,
+    fecha: "2026-05-12",
+    responsable: "Ana Gómez (Mesa Operativa)",
+    comentario: "Certificado recibido y validado de manera conforme.",
+    activo: true
+  },
+  {
+    novedadId: novedades[1]._id,
+    fecha: "2026-05-13",
+    responsable: "Carlos López (ART)",
+    comentario: "Denuncia a la aseguradora realizada con éxito.",
+    activo: true
+  },
+  {
+    novedadId: novedades[2]._id,
+    fecha: "2026-05-15",
+    responsable: "Dirección General",
+    comentario: "Descargo del empleado no justificado. Se procede con el descuento.",
+    activo: true
   }
 ]);
 

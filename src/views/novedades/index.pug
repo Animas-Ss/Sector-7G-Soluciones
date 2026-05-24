@@ -1,6 +1,35 @@
 extends ../layout
 
 block content
+  style.
+    .container { width: 100%; max-width: 1000px; }
+    .header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .btn-nuevo { background-color: #50fa7b; color: #282a36; padding: 10px 20px; text-decoration: none; border-radius: 8px; font-weight: bold; }
+    .btn-nuevo:hover { background-color: #40c863; }
+    
+    .filter-container { background-color: #2a2a40; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: flex; gap: 15px; align-items: center; }
+    .filter-label { font-weight: bold; color: #6272a4; }
+    .filter-btn { background-color: #44475a; color: white; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 14px; transition: background 0.3s; }
+    .filter-btn:hover { background-color: #6272a4; }
+    .filter-btn.active { background-color: #bd93f9; color: white; font-weight: bold; }
+    
+    .data-table { width: 100%; border-collapse: collapse; background-color: #2a2a40; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+    .data-table th, .data-table td { padding: 15px; text-align: left; border-bottom: 1px solid #44475a; }
+    .data-table th { background-color: #44475a; color: #f8f8f2; text-transform: uppercase; font-size: 13px; }
+    .data-table tr:hover { background-color: #383a59; }
+    
+    .btn-accion { background-color: #8be9fd; color: #282a36; padding: 6px 12px; text-decoration: none; border-radius: 4px; font-size: 12px; font-weight: bold; margin-right: 5px; display: inline-flex; align-items: center; justify-content: center; border: none; cursor: pointer; }
+    .btn-accion:hover { background-color: #6edbf0; }
+    .btn-editar { background-color: #bd93f9; color: #f8f8f2; }
+    .btn-editar:hover { background-color: #ff79c6; }
+    .btn-baja { background-color: #ff5555; color: #f8f8f2; }
+    .btn-baja:hover { background-color: #ff2222; }
+    
+    .badge-pendiente { background-color: #f1fa8c; color: #282a36; padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; display: inline-block; text-transform: capitalize; }
+    .badge-procesada { background-color: #50fa7b; color: #282a36; padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; display: inline-block; text-transform: capitalize; }
+    .badge-rechazada { background-color: #ff5555; color: #f8f8f2; padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; display: inline-block; text-transform: capitalize; }
+    .badge-inactivo { background-color: #ff5555; color: #f8f8f2; padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; display: inline-block; }
+
   .container
     .header-flex
       div
@@ -8,24 +37,74 @@ block content
         p Seguimiento de novedades administrativas y legales.
       a.btn-nuevo(href="/novedades/form") + Nueva Novedad
 
-    table.empresas-table
+    .filter-container
+      span.filter-label Filtrar por Estado:
+      a.filter-btn(href="/novedades" class=!estadoActual ? 'active' : '') Todas
+      a.filter-btn(href="/novedades?estado=pendiente" class=estadoActual === 'pendiente' ? 'active' : '') Pendiente
+      a.filter-btn(href="/novedades?estado=procesada" class=estadoActual === 'procesada' ? 'active' : '') Procesada
+      a.filter-btn(href="/novedades?estado=rechazada" class=estadoActual === 'rechazada' ? 'active' : '') Rechazada
+
+    table.data-table
       thead
         tr
           th ID
           th Tipo
           th Empleado
+          th Empresa
           th Fecha
           th Estado
           th Acciones
       tbody
-        each nov in novedades
+        if novedades && novedades.length > 0
+          each nov in novedades
+            tr
+              td(style="font-family: monospace; font-size: 11px; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;")= nov._id || nov.id
+              td= nov.tipo
+              td= nov.empleado ? `${nov.empleado.nombre} ${nov.empleado.apellido}` : 'N/A'
+              td= nov.empresa ? nov.empresa.nombre : 'N/A'
+              td= nov.fecha
+              td
+                if !nov.activo
+                  span.badge-inactivo Inactiva
+                else if nov.estado === 'pendiente'
+                  span.badge-pendiente Pendiente
+                else if nov.estado === 'procesada'
+                  span.badge-procesada Procesada
+                else if nov.estado === 'rechazada'
+                  span.badge-rechazada Rechazada
+                else
+                  span.badge-pendiente= nov.estado || 'Pendiente'
+              td
+                a.btn-accion(href=`/novedades/${nov._id || nov.id}`) Detalle
+                a.btn-accion.btn-editar(href=`/novedades/form/${nov._id || nov.id}`) Editar
+                if nov.activo
+                  button.btn-accion.btn-baja.js-baja(type="button" data-id=nov._id || nov.id) Eliminar
+        else
           tr
-            td= nov.id
-            td= nov.tipo
-            td= nov.empleadoId
-            td= nov.fecha
-            td
-              span(class=`badge-${nov.estado === 'Procesada' ? 'activo' : 'inactivo'}`)= nov.estado || 'Pendiente'
-            td
-              a.btn-accion(href=`/novedades/${nov.id}`) Detalle
-              a.btn-accion(href=`/novedades/form/${nov.id}`) Editar
+            td(colspan="7" style="text-align: center; padding: 30px; color: #6272a4;") No se encontraron novedades en el sistema.
+
+  script.
+    async function darDeBaja(id) {
+      if (!confirm('¿Dar de baja a esta novedad?')) return;
+      
+      try {
+        const response = await fetch(`/api/novedades/${id}`, { method: 'DELETE' });
+        
+        if (response.ok) {
+          window.location.reload(); 
+        } else {
+          const errorData = await response.json().catch(() => ({}));
+          alert('No se pudo realizar la acción: ' + (errorData.message || `HTTP ${response.status}`));
+        }
+      } catch (error) {
+        console.error(error);
+        alert('Error de conexión con el servidor.');
+      }
+    }
+
+    document.addEventListener('click', (event) => {
+      const btn = event.target.closest('button.js-baja');
+      if (!btn) return;
+      const id = btn.getAttribute('data-id');
+      darDeBaja(id);
+    });

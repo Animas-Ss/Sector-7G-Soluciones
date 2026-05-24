@@ -11,7 +11,11 @@ class SeguimientoViewController {
     const { id } = req.params;
     const novedades = await listarNovedades({});
     let seguimiento = null;
-    if (id) seguimiento = await obtenerSeguimiento(id);
+    if (id) {
+      seguimiento = await obtenerSeguimiento(id);
+    } else if (req.query.novedadId) {
+      seguimiento = { novedadId: req.query.novedadId };
+    }
     res.render('seguimientos/form', {
       titulo: id ? 'Editar Seguimiento' : 'Nuevo Seguimiento',
       seguimiento, novedades

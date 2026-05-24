@@ -1,3 +1,42 @@
-import { createJsonRepository } from "./json.store.js";
+import { Seguimiento } from "../models/seguimiento.js";
 
-export const seguimientoDb = createJsonRepository("seguimiento.json");
+const toPlainSeguimiento = (doc) => {
+  if (!doc) return null;
+  const plain = doc.toObject({ virtuals: false });
+  return { ...plain, id: String(plain._id) };
+};
+
+export const seguimientoDb = {
+  async getAll() {
+    const rows = await Seguimiento.find().populate("novedadId").lean();
+    return rows.map((row) => ({ ...row, id: String(row._id) }));
+  },
+
+  async getById(id) {
+    if (!id) return null;
+    const doc = await Seguimiento.findById(id).populate("novedadId");
+    return toPlainSeguimiento(doc);
+  },
+
+  async create(entity) {
+    const doc = await Seguimiento.create(entity);
+    const populated = await Seguimiento.findById(doc._id).populate("novedadId");
+    return toPlainSeguimiento(populated);
+  },
+
+  async update(id, changes) {
+    const doc = await Seguimiento.findByIdAndUpdate(id, changes, { new: true }).populate(
+      "novedadId",
+    );
+    return toPlainSeguimiento(doc);
+  },
+
+  async remove(id) {
+    const doc = await Seguimiento.findByIdAndUpdate(
+      id,
+      { activo: false },
+      { new: true },
+    ).populate("novedadId");
+    return toPlainSeguimiento(doc);
+  },
+};

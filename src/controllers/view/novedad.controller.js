@@ -5,7 +5,11 @@ import { listarEmpleados } from "../../services/empleado.service.js";
 class NovedadViewController {
   async getAll(req, res) {
     const novedades = await listarNovedades(req.query);
-    res.render('novedades/index', { titulo: 'Gestión de Novedades', novedades });
+    res.render('novedades/index', {
+      titulo: 'Gestión de Novedades',
+      novedades,
+      estadoActual: req.query.estado
+    });
   }
 
   async getForm(req, res) {

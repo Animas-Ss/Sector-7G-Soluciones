@@ -1,6 +1,7 @@
 import express from 'express';
 import morgan from 'morgan';
 import session from "express-session";
+import MongoStore from 'connect-mongo';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { connectDB, MONGODB_URI, PORT, SESSION_SECRET } from './config/app.config.js';
@@ -32,7 +33,12 @@ app.use(
     secret: SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false },
+    cookie: { secure: false, maxAge: 1000 * 60 * 60 * 24 }, // 24 horas
+    store: MongoStore.create({
+      mongoUrl: MONGODB_URI,
+      collectionName: 'sessions',
+      ttl: 60 * 60 * 24, // 24 horas en segundos
+    }),
   }),
 );
 

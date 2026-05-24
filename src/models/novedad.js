@@ -1,37 +1,43 @@
-import { nowIso } from "../libs/time.js";
+import mongoose from "mongoose";
 
-export const createNovedad = (payload) => {
-  const timestamp = nowIso();
+const novedadSchema = new mongoose.Schema(
+  {
+    empleadoId: { type: mongoose.Schema.Types.ObjectId, ref: "Empleado", required: true },
+    empresaId: { type: mongoose.Schema.Types.ObjectId, ref: "Empresa", required: true },
+    tipo: { type: String, required: true, trim: true },
+    estado: {
+      type: String,
+      enum: ["pendiente", "procesada", "rechazada"],
+      default: "pendiente",
+      trim: true,
+    },
+    descripcion: { type: String, required: true, trim: true },
+    fecha: { type: String, required: true },
+    activo: { type: Boolean, default: true },
+  },
+  { timestamps: true },
+);
 
-  return {
-    tipo: payload.tipo.trim(),
-    descripcion: payload.descripcion.trim(),
-    estado: payload.estado ? payload.estado.trim() : "pendiente",
-    fecha: payload.fecha,
-    empresaId: Number(payload.empresaId),
-    empleadoId: Number(payload.empleadoId),
-    activo: true,
-    createdAt: timestamp,
-    updatedAt: timestamp,
-  };
-};
+export const Novedad =
+  mongoose.models.Novedad || mongoose.model("Novedad", novedadSchema);
 
-export const updateNovedad = (currentNovedad, payload) => ({
-  ...currentNovedad,
-  tipo: payload.tipo !== undefined ? payload.tipo.trim() : currentNovedad.tipo,
-  descripcion:
-    payload.descripcion !== undefined
-      ? payload.descripcion.trim()
-      : currentNovedad.descripcion,
-  estado:
-    payload.estado !== undefined ? payload.estado.trim() : currentNovedad.estado,
-  fecha: payload.fecha !== undefined ? payload.fecha : currentNovedad.fecha,
-  empresaId:
-    payload.empresaId !== undefined
-      ? Number(payload.empresaId)
-      : currentNovedad.empresaId,
-  empleadoId:
-    payload.empleadoId !== undefined
-      ? Number(payload.empleadoId)
-      : currentNovedad.empleadoId,
+// Compat helpers used by existing services (kept minimal)
+export const createNovedad = (payload) => ({
+  tipo: payload.tipo?.trim(),
+  descripcion: payload.descripcion?.trim(),
+  estado: payload.estado ? payload.estado.trim() : "pendiente",
+  fecha: payload.fecha,
+  empresaId: payload.empresaId,
+  empleadoId: payload.empleadoId,
+  activo: true,
+});
+
+export const updateNovedad = (_currentNovedad, payload) => ({
+  ...(payload.tipo !== undefined ? { tipo: payload.tipo.trim() } : {}),
+  ...(payload.descripcion !== undefined ? { descripcion: payload.descripcion.trim() } : {}),
+  ...(payload.estado !== undefined ? { estado: payload.estado.trim() } : {}),
+  ...(payload.fecha !== undefined ? { fecha: payload.fecha } : {}),
+  ...(payload.empresaId !== undefined ? { empresaId: payload.empresaId } : {}),
+  ...(payload.empleadoId !== undefined ? { empleadoId: payload.empleadoId } : {}),
+  ...(payload.activo !== undefined ? { activo: Boolean(payload.activo) } : {}),
 });

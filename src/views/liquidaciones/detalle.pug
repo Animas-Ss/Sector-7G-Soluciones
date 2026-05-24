@@ -1,0 +1,54 @@
+extends ../layout
+
+block content
+  style.
+    .container { width: 100%; max-width: 900px; }
+    .header-flex {display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;}
+    .btn-volver { background-color: #8be9fd; color: #282a36; padding: 10px 18px; text-decoration: none; border-radius: 8px; font-weight: bold; }
+    .btn-volver:hover { background-color: #6edbf0; }
+
+    .detalle-card { background-color: #2a2a40; border-radius: 12px;  padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);}
+    .detalle-grid { display: grid; grid-template-columns: 220px 1fr; gap: 18px; margin-bottom: 15px; align-items: center; border-bottom: 1px solid #44475a; padding-bottom: 12px; }
+    .detalle-label { font-weight: bold; color: #8be9fd; text-transform: uppercase; font-size: 13px; }
+    .detalle-value { color: #f8f8f2; font-size: 16px; }
+
+    .badge-activo { background-color: #50fa7b; color: #282a36; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: bold; display: inline-block; }
+    .badge-inactivo { background-color: #ff5555; color: #f8f8f2; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: bold; display: inline-block; }
+
+  .container
+    .header-flex
+      div
+        h1 Detalle de Liquidación
+        p Información completa de la liquidación seleccionada
+      div
+        a.btn-volver(href="/liquidaciones") Volver
+
+    .detalle-card
+
+      .detalle-grid
+        .detalle-label Empresa
+        .detalle-value= liquidacion.empresaId ? liquidacion.empresaId.nombre : 'N/A'
+
+      .detalle-grid
+        .detalle-label Empleado
+        .detalle-value= liquidacion.empleadoId ? `${liquidacion.empleadoId.nombre} ${liquidacion.empleadoId.apellido}` : 'N/A'
+
+      .detalle-grid
+        .detalle-label Período
+        .detalle-value= liquidacion.periodo
+
+      .detalle-grid
+        .detalle-label Total Bruto
+        .detalle-value $ #{liquidacion.totalBruto}
+
+      .detalle-grid
+        .detalle-label Total Neto
+        .detalle-value $ #{liquidacion.totalNeto}
+
+      .detalle-grid
+        .detalle-label Estado
+        .detalle-value
+          if liquidacion.activa
+            span.badge-activo Activa
+          else
+            span.badge-inactivo Inactiva

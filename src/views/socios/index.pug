@@ -38,6 +38,7 @@ block content
           th Correo Electrónico
           th Estado
           th Acciones
+          
       tbody
         if socios && socios.length > 0
           each socio in socios
@@ -51,10 +52,10 @@ block content
                 else
                   span.badge-inactivo Inactivo
               td
-                a.btn-accion(href=`/socios/${socio.id}`) Ver
-                a.btn-accion.btn-editar(href=`/socios/form/${socio.id}`) Editar
+                a.btn-accion(href=`/socios/${socio._id}`) Ver
+                a.btn-accion.btn-editar(href=`/socios/form/${socio._id}`) Editar
                 if socio.activo
-                  button.btn-accion.btn-baja(onclick=`darDeBaja(${socio.id})`) Dar de Baja
+                  button.btn-accion.btn-baja(onclick=`darDeBaja('${socio._id}')`) Dar de Baja
         else
           tr
             td(colspan="5" style="text-align: center; padding: 30px; color: #6272a4;") No hay socios registrados en el sistema.

@@ -22,7 +22,14 @@ class LiquidacionViewController {
 
   async getById(req, res) {
     const liquidacion = await obtenerLiquidacion(req.params.id);
-    res.render('liquidaciones/detalle', { titulo: `Liquidación #${liquidacion.id}`, liquidacion });
+    
+    if (!liquidacion) {
+      return res.status(404).send('Liquidación no encontrada');
+  }
+
+    res.render('liquidaciones/detalle', { 
+      titulo: `Liquidación #${liquidacion._id}`, liquidacion 
+    });
   }
 }
 

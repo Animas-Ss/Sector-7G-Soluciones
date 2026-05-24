@@ -1,32 +1,57 @@
 extends ../layout
 
 block content
+  style.
+    .container { width: 100%; max-width: 1000px; }
+    .header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .btn-nuevo { background-color: #50fa7b; color: #282a36; padding: 10px 20px; text-decoration: none; border-radius: 8px; font-weight: bold; }
+    .btn-nuevo:hover { background-color: #40c863; }
+    .data-table { width: 100%; border-collapse: collapse; background-color: #2a2a40; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+    .data-table th, .data-table td { padding: 15px; text-align: left; border-bottom: 1px solid #44475a; vertical-align: middle; }
+    .data-table th { background-color: #44475a; color: #f8f8f2; text-transform: uppercase; font-size: 13px; }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:hover { background-color: #383a59; }
+    
+    .btn-accion { background-color: #8be9fd; color: #282a36; padding: 6px 12px; text-decoration: none; border-radius: 4px; font-size: 12px; font-weight: bold; margin-right: 5px; display: inline-flex; align-items: center; justify-content: center; height: 28px; border: none; cursor: pointer; font-family: inherit; box-sizing: border-box; }
+    .btn-accion:hover { background-color: #6edbf0; }
+    .btn-editar { background-color: #bd93f9; color: #f8f8f2; }
+    .btn-editar:hover { background-color: #ff79c6; }
+    .btn-baja { background-color: #ff5555; color: #f8f8f2; }
+    .btn-baja:hover { background-color: #ff2222; }
+    
+    .badge-activo { background-color: #50fa7b; color: #282a36; padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; display: inline-block; }
+    .badge-inactivo { background-color: #ff5555; color: #f8f8f2; padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; display: inline-block; }
+
   .container
     .header-flex
       div
         h1= titulo || 'Listado de Liquidaciones'
         p Historial de haberes liquidados en el sistema.
-      a.btn-nuevo(href="/liquidaciones/form") + Nueva Liquidación
+      div
+        a.btn-nuevo(href="/liquidaciones/form") Nueva Liquidación
 
-    table.empresas-table
+
+    table.data-table
       thead
         tr
-          th ID
           th Empleado
           th Empresa
           th Período
-          th Monto
+          th Total Neto
           th Estado
           th Acciones
+
       tbody
         each liq in liquidaciones
           tr
-            td= liq.id
-            td= liq.empleadoId
-            td= liq.empresaId
+            td= liq.empleadoId ? `${liq.empleadoId.nombre} ${liq.empleadoId.apellido}` : 'N/A'
+            td= liq.empresaId ? liq.empresaId.nombre : 'N/A'
             td= liq.periodo
-            td $ #{liq.monto}
+            td $ #{liq.totalNeto}
             td
-              span.badge-activo= liq.estado || 'Procesado'
+              if liq.activa
+                span.badge-activo Activa
+              else
+                span.badge-inactivo Inactiva
             td
-              a.btn-accion(href=`/liquidaciones/${liq.id}`) Ver Detalle
+              a.btn-accion(href=`/liquidaciones/${liq._id}`) Ver Detalle

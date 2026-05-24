@@ -3,10 +3,18 @@ import { Empresa } from "../models/empresa.js";
 import { Empleado } from "../models/empleado.js";
 import bcrypt from "bcrypt";
 import { Usuario } from "../models/usuario.js";
+import { Liquidacion } from "../models/liquidacion.js";
+import { Socio } from "../models/socio.js";
+
 
 await connectDB();
 
-await Promise.all([Empleado.deleteMany({}), Empresa.deleteMany({}), Usuario.deleteMany({})]);
+await Promise.all([
+  Empleado.deleteMany({}), 
+  Empresa.deleteMany({}),
+  Liquidacion.deleteMany({}),
+  Socio.deleteMany({})
+, Usuario.deleteMany({})]);
 
 const adminPassword = await bcrypt.hash("admin123", 10);
 const clientePassword = await bcrypt.hash("cliente123", 10);
@@ -59,7 +67,7 @@ const empresas = await Empresa.insertMany([
   },
 ]);
 
-await Empleado.insertMany([
+const empleados = await Empleado.insertMany([
   {
     nombre: "Ana",
     apellido: "Pérez",
@@ -129,6 +137,36 @@ await Usuario.insertMany([
     password: clientePassword,
     rol: "cliente",
   },
+]);
+
+const socios = await Socio.insertMany([
+  { nombre: "Julieta", apellido: "Silva", dni: "29111222", participacion: 50 },
+  { nombre: "Marcos", apellido: "Paz", dni: "31333444", participacion: 30 },
+  { nombre: "Florencia", apellido: "Gómez", dni: "35999000", participacion: 20 }
+]);
+
+await Liquidacion.insertMany([
+  { 
+    empleadoId: empleados[0]._id, 
+    empresaId: empresas[0]._id, 
+    periodo: "2026-04", 
+    totalBruto: 450000, 
+    totalNeto: 373500 
+  },
+  { 
+    empleadoId: empleados[1]._id, 
+    empresaId: empresas[0]._id, 
+    periodo: "2026-04", 
+    totalBruto: 380000, 
+    totalNeto: 315400 
+  },
+  { 
+    empleadoId: empleados[2]._id, 
+    empresaId: empresas[1]._id, 
+    periodo: "2026-04", 
+    totalBruto: 520000, 
+    totalNeto: 431600 
+  }
 ]);
 
 console.log("Seed completed.");

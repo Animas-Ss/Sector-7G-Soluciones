@@ -9,13 +9,17 @@ const validarParticipacion = (participacion) => {
   }
 };
 
+
 const validarDniUnico = async (dni, excludeId = null) => {
   const socios = await socioDb.findAll();
-  const duplicado = socios.find(
-    (s) => s.dni === String(dni).trim() && s._id.toString !== excludeId
+  const dniNormalizado = String(dni).trim();
+
+  const existe = socios.some(s => 
+    s.dni === dniNormalizado && 
+    s._id.toString() !== String(excludeId)
   );
 
-  if (duplicado) {
+  if (existe) {
     throw badRequest(`Ya existe un socio registrado con el DNI ${dni}.`);
   }
 };
@@ -66,7 +70,7 @@ export const actualizarSocio = async (id, payload) => {
   }
 
   if (payload.dni !== undefined) {
-    await validarDniUnico(payload.dni, socio.id);
+    await validarDniUnico(payload.dni, id);
   }
 
   const socioActualizado = await socioDb.update(id, payload);

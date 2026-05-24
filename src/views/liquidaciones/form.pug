@@ -1,38 +1,127 @@
 extends ../layout
 
 block content
+  style.
+    .container { width: 100%; max-width: 600px; margin: 0 auto; }
+    
+    .form-card {
+      background-color: #2a2a40;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+    
+    .form-group { margin-bottom: 20px;
+    }
+    
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      color: #8be9fd;
+      text-transform: uppercase;
+      font-size: 13px;
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      background-color: #44475a;
+      color: #f8f8f2;
+      border: 1px solid transparent;
+      box-sizing: border-box;
+      font-family: inherit;
+      font-size: 14px;
+    }
+    
+    .form-control:focus {
+      outline: none;
+      border-color: #bd93f9;
+    }
+    
+    .button-group {
+      display: flex;
+      gap: 15px;
+      margin-top: 30px;
+    }
+    
+    .btn-generar {
+      background-color: #50fa7b;
+      color: #282a36;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      flex: 1;
+      font-size: 14px;
+      text-align: center;
+      font-family: inherit;
+    }
+    
+    .btn-generar:hover { background-color: #40c863;}
+    
+    .btn-cancelar {
+      background-color: #ff5555;
+      color: #f8f8f2;
+      padding: 12px;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      flex: 1;
+      text-align: center;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    
+    .btn-cancelar:hover {
+      background-color: #ff2222;
+    }
+
+    h1 {
+      color: #f8f8f2;
+      margin-bottom: 25px;
+      text-align: center;
+    }
+
+
   .container
     h1= titulo
-    form(id="liquidacionForm" style="max-width: 600px; background: #2a2a40; padding: 30px; border-radius: 12px;")
+    
+    form.form-card(id="liquidacionForm")
       input(type="hidden" name="id" value=liquidacion ? liquidacion.id : "")
       
-      .form-group(style="margin-bottom: 20px;")
-        label(style="display: block; margin-bottom: 8px;") Empresa:
-        select(name="empresaId" required style="width: 100%; padding: 10px; border-radius: 6px; background: #44475a; color: white; border: none;")
+      .form-group
+        label.form-label Empresa:
+        select.form-control(name="empresaId" required)
           option(value="") Seleccione una empresa...
           each emp in empresas
             option(value=emp.id selected=(liquidacion && liquidacion.empresaId == emp.id))= emp.nombre
 
-      .form-group(style="margin-bottom: 20px;")
-        label(style="display: block; margin-bottom: 8px;") Empleado:
-        select(name="empleadoId" required style="width: 100%; padding: 10px; border-radius: 6px; background: #44475a; color: white; border: none;")
+      .form-group
+        label.form-label Empleado:
+        select.form-control(name="empleadoId" required)
           option(value="") Seleccione un empleado...
           each emp in empleados
             option(value=emp.id selected=(liquidacion && liquidacion.empleadoId == emp.id))= `${emp.nombre} ${emp.apellido}`
 
-      .form-group(style="margin-bottom: 20px;")
-        label(style="display: block; margin-bottom: 8px;") Período (MM/YYYY):
-        input(type="text" name="periodo" value=liquidacion ? liquidacion.periodo : "" placeholder="Ej: 04/2024" required style="width: 100%; padding: 10px; border-radius: 6px; background: #44475a; color: white; border: none;")
+      .form-group
+        label.form-label Período (MM/YYYY):
+        input.form-control(type="text" name="periodo" value=liquidacion ? liquidacion.periodo : "" placeholder="Ej: 04/2024" required)
 
-      .form-group(style="margin-bottom: 20px;")
-        label(style="display: block; margin-bottom: 8px;") Concepto:
-        input(type="text" name="concepto" value=liquidacion ? liquidacion.concepto : "" placeholder="Ej: Haberes Mensuales" required style="width: 100%; padding: 10px; border-radius: 6px; background: #44475a; color: white; border: none;")
+      .form-group
+        label.form-label Concepto:
+        input.form-control(type="text" name="concepto" value=liquidacion ? liquidacion.concepto : "" placeholder="Ej: Haberes Mensuales" required)
 
-      .form-group(style="margin-bottom: 20px;")
-        label(style="display: block; margin-bottom: 8px;") Monto:
-        input(type="number" name="monto" value=liquidacion ? liquidacion.monto : "" step="0.01" required style="width: 100%; padding: 10px; border-radius: 6px; background: #44475a; color: white; border: none;")
+      .form-group
+        label.form-label Monto:
+        input.form-control(type="number" name="monto" value=liquidacion ? liquidacion.monto : "" step="0.01" required)
 
-      button.btn-nuevo(type="submit" style="width: 100%; border: none; cursor: pointer;")= liquidacion ? 'Actualizar Liquidación' : 'Generar Liquidación'
+      .button-group
+        button.btn-generar(type="submit")= liquidacion ? 'Actualizar' : 'Generar'
+        a.btn-cancelar(href="/liquidaciones") Cancelar
 
   script.
     document.getElementById('liquidacionForm').addEventListener('submit', async (e) => {
@@ -53,5 +142,5 @@ block content
         window.location.href = '/liquidaciones';
       } else {
         alert('Error al procesar la liquidación');
-      }
+      } 
     });

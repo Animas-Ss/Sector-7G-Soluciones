@@ -305,7 +305,9 @@ La segunda entrega profundiza los contenidos de la materia incorporando **persis
 - [x] Bibliografía y fuentes consultadas
 - [x] Mención del uso de IA
 - [x] Explicación de decisiones técnicas
+- [x] Conclusión grupal: qué aprendieron, dificultades, qué les interesó, qué reforzarían
 - [x] Fixes de conexión sobre configuración de MongoDB Atlas y seed
+- [ ] Desplegar el proyecto (Render, Railway, etc.)
 
 ### **Responsable:** Cecilia Gómez (`cesugomez`)
 - [x] Unificación de css
@@ -314,11 +316,8 @@ La segunda entrega profundiza los contenidos de la materia incorporando **persis
 ### **Responsable:** Florencia Marcazzo (`Floh2023`) 
 - [x] Configurar **MongoDB Atlas**
 
-
 ### **Responsable:** TBD
-- [ ] Desplegar el proyecto (Render, Railway, etc.)
 - [ ] Documentación de pruebas (objetivo, procedimiento, resultados)
-- [ ] Conclusión grupal: qué aprendieron, dificultades, qué les interesó, qué reforzarían
 
 ## ACUERDO DE EQUIPO - Uso de Ramas en Git
 
